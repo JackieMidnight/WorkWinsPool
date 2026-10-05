@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// Paint the right background before the page renders: the saved theme, else light on wide screens and dark on phones.
+try { document.documentElement.setAttribute('data-theme', localStorage.getItem('wwp-theme') || (window.matchMedia('(min-width: 1024px)').matches ? 'light' : 'dark')); } catch (e) {}
+</script>
+<title>Work Wins Pool, all 32 teams</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Libre+Franklin:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:"Libre Franklin",system-ui,-apple-system,"Segoe UI",sans-serif;background:#0A1F14}
+a{color:#C9A24B}a:hover{color:#E2BE6A}
+.wwp-dark{--bg:#0A1F14;--panel:#102A1B;--panel2:#0D2518;--ink:#EFEDE0;--soft:#9DB5A4;--line:#1D4530;--gold:#C9A24B;--goldsoft:rgba(201,162,75,.16);--up:#9CCB55;--dn:#8A9C90;--track:#1B3A27;--chip:#163A26;--ongold:#0A1F14}
+.wwp-light{--bg:#EEF2EA;--panel:#FFFFFF;--panel2:#F6F8F3;--ink:#0C2418;--soft:#4A6353;--line:#C7D6C7;--gold:#8A6B1C;--goldsoft:rgba(138,107,28,.12);--up:#2E6A1E;--dn:#66786C;--track:#DBE3D9;--chip:#E3EADF;--ongold:#FFFFFF}
+html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{background:#0A1F14}
+</style>
+<script src="nfl.js?v=1" defer></script>
+<script src="league.js?v=1" defer></script>
+<script src="pool.js?v=1" defer></script>
+<script src="support.js?v=1" defer></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template">
+<div class="{{modeClass}}" style="width: 100%; max-width: 480px; min-height: 100vh; margin: 0 auto; box-sizing: border-box; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; font-size: 16px; line-height: 1.5">
+
+<header style="display: flex; align-items: center; gap: 10px; height: 60px; padding: 0 16px; border-bottom: 1px solid var(--line)">
+<a href="index.html" style="display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink)">
+<svg width="26" height="31" viewBox="0 0 60 72" aria-hidden="true"><path d="M30 3 L56 11 V35 C56 52 45 62 30 69 C15 62 4 52 4 35 V11 Z" fill="#14452C" stroke="#C9A24B" stroke-width="4"></path><ellipse cx="30" cy="37" rx="13" ry="8" fill="#9A5530" transform="rotate(-28 30 37)"></ellipse><path d="M24 40.5 L36 33.5" stroke="#F4F1E4" stroke-width="2"></path></svg>
+<span style="font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-size: 21px; letter-spacing: .03em; line-height: 1">{{leagueUpper}}</span>
+</a>
+<button type="button" aria-label="Switch theme" onClick="{{toggleMode}}" style="margin-left: auto; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--soft); cursor: pointer">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+</button>
+</header>
+<nav aria-label="Site sections" style="display: flex; gap: 2px; overflow-x: auto; padding: 0 8px; border-bottom: 1px solid var(--line)">
+<a href="index.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">This week</a>
+<a href="season.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Season</a>
+<a href="coaches.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Coaches</a>
+<a href="teams.html" aria-current="page" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 700; color: var(--ink); text-decoration: none; box-shadow: inset 0 -3px 0 var(--gold)">Teams</a>
+<a href="rosters.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Rosters</a>
+<a href="rules.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Rules</a>
+</nav>
+
+<section data-wide="left" data-sticky="" style="padding: 26px 16px 0; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 42px; line-height: 1">All 32 teams</h1>
+<p style="margin: 0; font-size: 15px; color: var(--soft)">Every team, who owns it, and how its pace compares with what Vegas expected before the season.</p>
+</div>
+<div role="group" aria-label="Sort by" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px">
+<sc-for list="{{sorts}}" as="s" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{s.pressed}}" onClick="{{s.pick}}" style="min-height: 40px; border: 0; border-radius: 5px; font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; background: {{s.bg}}; color: {{s.fg}}">{{s.label}}</button>
+</sc-for>
+</div>
+<div role="group" aria-label="Show one coach" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{filters}}" as="c" hint-placeholder-count="9">
+<button type="button" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="min-height: 36px; padding: 0 12px; border-radius: 18px; font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}">{{c.name}}</button>
+</sc-for>
+</div>
+<p style="margin: 0; font-size: 14px">{{summary}}</p>
+</section>
+
+<section data-wide="right" aria-label="Team list" style="padding: 14px 16px 0; display: flex; flex-direction: column">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 136px 46px; gap: 10px; padding: 0 0 6px; border-bottom: 1px solid var(--line); font-size: 11.5px; font-weight: 600; color: var(--soft)"><span>Team, owner, record</span><span style="text-align: center">Behind · pace vs Vegas · ahead</span><span style="text-align: right">Gap</span></div>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="32">
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 136px 46px; gap: 10px; align-items: center; height: 54px; border-bottom: 1px solid var(--line)">
+<span style="display: flex; flex-direction: column; min-width: 0; line-height: 1.3">
+<span style="display: flex; align-items: baseline; gap: 6px; min-width: 0"><b style="font-size: 14.5px; letter-spacing: .02em">{{r.abbr}}</b><span style="font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.nick}}</span></span>
+<span style="font-size: 12px; color: var(--soft); white-space: nowrap">{{r.owner}} · {{r.rec}} · {{r.pts}}</span>
+</span>
+<span aria-label="{{r.aria}}" style="position: relative; height: 22px; display: block">
+<span style="position: absolute; left: 67px; top: 0; bottom: 0; width: 2px; background: var(--soft); opacity: .6"></span>
+<span style="position: absolute; top: 5px; height: 12px; border-radius: 2px; left: {{r.barLeft}}px; width: {{r.barW}}px; background: {{r.barColor}}"></span>
+</span>
+<span style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2"><b style="font-size: 14px; color: {{r.diffColor}}">{{r.diff}}</b><span style="font-size: 11px; color: var(--soft)">{{r.paceTxt}}</span></span>
+</div>
+</sc-for>
+<p style="margin: 14px 0 0; font-size: 13px; line-height: 1.5; color: var(--soft)">{{paceNote}}</p>
+</section>
+
+<footer style="margin-top: auto; padding: 36px 16px 40px; text-align: center; border-top: 1px solid var(--line)">
+<span style="font-size: 11.5px; font-weight: 700; letter-spacing: .08em; color: var(--up)">{{tagline}}</span>
+</footer>
+</div>
+</template>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Theme"},"$preview":{"width":390,"height":3000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var self = this, st = this.state || {};
+    var mode = st.mode || this.props.mode || 'dark';
+    var sortBy = st.sortBy || 'pace', only = st.only || 'All';
+    var P = window.POOL, N = window.NFL;
+    var OWN = P.own, NICK = N.NICK, VEGAS = N.VEGAS;
+    var rec = {}, gp = {};
+    P.teams.forEach(function (t) { rec[t] = [0, 0, 0]; gp[t] = 0; });
+    P.weeks.forEach(function (games) {
+      games.forEach(function (g) {
+        gp[g.a]++; gp[g.h]++;
+        if (g.as === g.hs) { rec[g.a][2]++; rec[g.h][2]++; } else { var win = g.as > g.hs ? g.a : g.h, lose = g.as > g.hs ? g.h : g.a; rec[win][0]++; rec[lose][1]++; }
+      });
+    });
+    var display = P.table(P.latest).order;
+    var teams = P.teams.map(function (t) {
+      var pts = rec[t][0] + rec[t][2] * 0.5, pace = gp[t] ? pts / gp[t] * N.GAMES : 0, d = pace - VEGAS[t];
+      return { t: t, pts: pts, pace: pace, d: d, owner: OWN[t] || 'Nobody' };
+    });
+    var maxAbs = Math.max.apply(null, teams.map(function (x) { return Math.abs(x.d); })) || 1;
+    var half = 66;
+    var list = teams.filter(function (x) { return only === 'All' || x.owner === only; });
+    list.sort(function (x, y) {
+      if (sortBy === 'points') return y.pts - x.pts || y.d - x.d || (x.t < y.t ? -1 : 1);
+      if (sortBy === 'coach') return display.indexOf(x.owner) - display.indexOf(y.owner) || y.pts - x.pts || y.d - x.d;
+      return y.d - x.d || (x.t < y.t ? -1 : 1);
+    });
+    var rows = list.map(function (x) {
+      var w = Math.max(2, Math.round(Math.abs(x.d) / maxAbs * half));
+      return { abbr: x.t, nick: NICK[x.t], owner: x.owner, rec: P.fmtRec(rec[x.t]), pts: x.pts + (x.pts === 1 ? ' pt' : ' pts'),
+        diff: (x.d >= 0 ? '+' : '') + x.d.toFixed(1), diffColor: x.d >= 0 ? 'var(--up)' : 'var(--soft)',
+        paceTxt: x.pace.toFixed(1) + ' vs ' + VEGAS[x.t],
+        barLeft: x.d >= 0 ? 68 : 68 - w - 1, barW: w, barColor: x.d >= 0 ? 'var(--up)' : 'var(--dn)',
+        aria: 'On pace for ' + x.pace.toFixed(1) + ' wins against a preseason total of ' + VEGAS[x.t] };
+    });
+    var unbeaten = teams.filter(function (x) { return gp[x.t] && rec[x.t][1] === 0 && rec[x.t][2] === 0; }).map(function (x) { return x.t; }).sort();
+    var winless = teams.filter(function (x) { return gp[x.t] && rec[x.t][0] === 0 && rec[x.t][2] === 0; }).map(function (x) { return x.t; }).sort();
+    var count = function (xs, one, many) { return P.word(xs.length) + ' ' + (xs.length === 1 ? one : many) + (xs.length ? ' (' + xs.join(', ') + ')' : ''); };
+    var summary = only === 'All'
+      ? P.cap(count(unbeaten, 'team is unbeaten', 'teams are unbeaten')) + ' and ' + count(winless, 'is winless', 'are winless') + '.'
+      : P.poss(only) + ' ' + P.word(list.length) + ' teams have ' + list.reduce(function (s, x) { return s + x.pts; }, 0) + ' points combined.';
+    var played = Math.max.apply(null, P.teams.map(function (t) { return gp[t]; }));
+    var sorts = [['pace', 'Pace vs Vegas'], ['points', 'Points'], ['coach', 'By coach']].map(function (s) {
+      var on = s[0] === sortBy;
+      return { label: s[1], pressed: on ? 'true' : 'false', pick: function () { self.setState({ sortBy: s[0] }); }, bg: on ? 'var(--gold)' : 'transparent', fg: on ? 'var(--ongold)' : 'var(--ink)' };
+    });
+    var filters = ['All'].concat(display).map(function (c) {
+      var on = c === only;
+      return { name: c, pressed: on ? 'true' : 'false', pick: function () { self.setState({ only: c }); },
+        border: on ? 'var(--gold)' : 'var(--line)', bg: on ? 'var(--goldsoft)' : 'var(--panel)', fg: 'var(--ink)' };
+    });
+    return { modeClass: 'wwp-' + mode, toggleMode: function () { self.setState({ mode: mode === 'dark' ? 'light' : 'dark' }); },
+      sorts: sorts, filters: filters, rows: rows, summary: summary,
+      paceNote: 'Pace is wins so far divided by games played, times ' + N.GAMES + '. Vegas is the preseason win total from September 9.' +
+        (played && played < 8 ? ' ' + P.cap(P.word(played)) + ' games in, one win moves a team’s pace by ' + (N.GAMES / played).toFixed(1) + ', so read this loosely for now.' : '') };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+/*
+ * NFL data for the 2026 season: scores, schedule notes, Vegas totals, byes and
+ * last season's records. Nothing in here belongs to the pool; who owns which
+ * team lives in league.js.
+ *
+ * Updating during a week: add each finished game to that week's part of RESULTS
+ * (away home awayScore homeScore) and remove it from PENDING.
+ * Starting a new week: add a '/' and the first results to RESULTS and list the
+ * rest of that week's games in PENDING under the new week number.
+ */
+window.NFL = {
+  SEASON_START: '2026-09-10', // Thursday of Week 1, used for the "Games Sep 10–14" dates
+  SEASON_WEEKS: 18,
+  GAMES: 17,
+
+  // Results by week: away home awayScore homeScore. Add a week by appending '/...' with its games.
+  RESULTS: 'BUF HOU 36 31,TB CIN 27 33,CLE JAX 10 34,NE SEA 10 13,MIA LV 13 27,GB MIN 22 39,BAL IND 41 23,WAS PHI 22 24,ATL PIT 13 20,NYJ TEN 23 10,NO DET 30 31,DEN KC 10 31,DAL NYG 20 28,CHI CAR 59 37,ARI LAC 26 14,SF LAR 27 7' +
+    '/DET BUF 31 41,PHI TEN 24 20,PIT NE 3 20,MIN CHI 9 3,CAR ATL 34 3,GB NYJ 20 17,NO BAL 24 17,CIN HOU 20 6,CLE TB 23 19,JAX DEN 13 20,LV LAC 26 14,SEA ARI 31 7,MIA SF 13 35,WAS DAL 20 37,IND KC 30 33,NYG LAR 6 28' +
+    '/ATL GB 35 14,HOU IND 17 19,KC MIA 24 10,LAC BUF 16 24,TEN NYG 7 12,CIN PIT 27 30,SEA WAS 31 33,NE JAX 6 35,CAR CLE 18 21,NYJ DET 24 31,ARI SF 30 36,MIN TB 23 16,LV NO 35 27,BAL DAL 34 31,LAR DEN 26 30,PHI CHI 7 27' +
+    '/PIT CLE 24 27,IND WAS 30 13,NE BUF 29 26,ARI NYG 24 36,NYJ CHI 12 23,TEN BAL 18 24,GB TB 17 14,DAL HOU 34 30,JAX CIN 22 17,LAR PHI 24 20,MIA MIN 10 15,DEN SF 14 24,LAC SEA 23 30,KC LV 30 27,DET CAR 26 32',
+
+  // Games of an in-progress week that haven't finished: [day and time, away, home].
+  // When the week is over, add its last games to RESULTS and empty its PENDING entry.
+  PENDING: {
+    4: [['Mon 8:15', 'ATL', 'NO']]
+  },
+
+  NICK: { ARI: 'Cardinals', ATL: 'Falcons', BAL: 'Ravens', BUF: 'Bills', CAR: 'Panthers', CHI: 'Bears', CIN: 'Bengals', CLE: 'Browns', DAL: 'Cowboys', DEN: 'Broncos', DET: 'Lions', GB: 'Packers', HOU: 'Texans', IND: 'Colts', JAX: 'Jaguars', KC: 'Chiefs', LAC: 'Chargers', LAR: 'Rams', LV: 'Raiders', MIA: 'Dolphins', MIN: 'Vikings', NE: 'Patriots', NO: 'Saints', NYG: 'Giants', NYJ: 'Jets', PHI: 'Eagles', PIT: 'Steelers', SEA: 'Seahawks', SF: '49ers', TB: 'Buccaneers', TEN: 'Titans', WAS: 'Commanders' },
+  // Preseason win totals from September 9
+  VEGAS: { BUF: 10.5, CIN: 10.5, TB: 8.5, CLE: 5.5, SEA: 10.5, LV: 5.5, GB: 9.5, IND: 7.5, PHI: 10.5, JAX: 8.5, PIT: 8.5, TEN: 6.5, BAL: 11.5, DET: 10.5, MIN: 8.5, ATL: 7.5, KC: 10.5, NYG: 7.5, HOU: 9.5, CAR: 7.5, NYJ: 5.5, DEN: 9.5, NE: 10.5, NO: 7.5, CHI: 9.5, ARI: 3.5, LAR: 11.5, DAL: 9.5, SF: 9.5, LAC: 9.5, WAS: 7.5, MIA: 3.5 },
+  BYE: { CAR: 5, KC: 5, CIN: 6, DET: 6, MIA: 6, MIN: 6, BUF: 7, JAX: 7, LAC: 7, WAS: 7, HOU: 8, NO: 8, NYG: 8, SF: 8, PIT: 9, TEN: 9, CHI: 10, DEN: 10, PHI: 10, TB: 10, ATL: 11, CLE: 11, GB: 11, LAR: 11, NE: 11, SEA: 11, BAL: 13, IND: 13, LV: 13, NYJ: 13, ARI: 14, DAL: 14 },
+
+  // 2025 regular season [wins, losses, ties]
+  LAST: { SEA: [14, 3, 0], NE: [14, 3, 0], DEN: [14, 3, 0], JAX: [13, 4, 0], LAR: [12, 5, 0], BUF: [12, 5, 0], HOU: [12, 5, 0], SF: [12, 5, 0], PHI: [11, 6, 0], LAC: [11, 6, 0], CHI: [11, 6, 0], PIT: [10, 7, 0], GB: [9, 7, 1], DET: [9, 8, 0], MIN: [9, 8, 0], IND: [8, 9, 0], BAL: [8, 9, 0], TB: [8, 9, 0], ATL: [8, 9, 0], CAR: [8, 9, 0], DAL: [7, 9, 1], MIA: [7, 10, 0], KC: [6, 11, 0], NO: [6, 11, 0], CIN: [6, 11, 0], WAS: [5, 12, 0], CLE: [5, 12, 0], NYG: [4, 13, 0], ARI: [3, 14, 0], LV: [3, 14, 0], TEN: [3, 14, 0], NYJ: [3, 14, 0] },
+  // 2025 playoffs, round by round. Conference games are [label, away, home].
+  PLAYOFFS_2025: {
+    wildCard: ['LAR', 'CHI', 'BUF', 'SF', 'NE', 'HOU'],
+    divisional: ['DEN', 'SEA', 'NE', 'LAR'],
+    byes: ['DEN', 'SEA'],
+    conference: [['AFC Championship', 'NE', 'DEN'], ['NFC Championship', 'LAR', 'SEA']],
+    conferenceWinners: ['NE', 'SEA'],
+    champion: 'SEA',
+    ending: 'Seattle beat the Rams 31-27, New England beat Denver 10-7, and Seattle won the Super Bowl 29-13.'
+  }
+};

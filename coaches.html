@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// Paint the right background before the page renders: the saved theme, else light on wide screens and dark on phones.
+try { document.documentElement.setAttribute('data-theme', localStorage.getItem('wwp-theme') || (window.matchMedia('(min-width: 1024px)').matches ? 'light' : 'dark')); } catch (e) {}
+</script>
+<title>Work Wins Pool, coach page</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Libre+Franklin:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:"Libre Franklin",system-ui,-apple-system,"Segoe UI",sans-serif;background:#0A1F14}
+a{color:#C9A24B}a:hover{color:#E2BE6A}
+.wwp-dark{--bg:#0A1F14;--panel:#102A1B;--panel2:#0D2518;--ink:#EFEDE0;--soft:#9DB5A4;--line:#1D4530;--gold:#C9A24B;--goldsoft:rgba(201,162,75,.16);--up:#9CCB55;--dn:#8A9C90;--track:#1B3A27;--chip:#163A26;--ongold:#0A1F14}
+.wwp-light{--bg:#EEF2EA;--panel:#FFFFFF;--panel2:#F6F8F3;--ink:#0C2418;--soft:#4A6353;--line:#C7D6C7;--gold:#8A6B1C;--goldsoft:rgba(138,107,28,.12);--up:#2E6A1E;--dn:#66786C;--track:#DBE3D9;--chip:#E3EADF;--ongold:#FFFFFF}
+html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{background:#0A1F14}
+</style>
+<script src="nfl.js?v=1" defer></script>
+<script src="league.js?v=1" defer></script>
+<script src="pool.js?v=1" defer></script>
+<script src="support.js?v=1" defer></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template">
+<div class="{{modeClass}}" style="width: 100%; max-width: 480px; min-height: 100vh; margin: 0 auto; box-sizing: border-box; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; font-size: 16px; line-height: 1.5">
+
+<header style="display: flex; align-items: center; gap: 10px; height: 60px; padding: 0 16px; border-bottom: 1px solid var(--line)">
+<a href="index.html" style="display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink)">
+<svg width="26" height="31" viewBox="0 0 60 72" aria-hidden="true"><path d="M30 3 L56 11 V35 C56 52 45 62 30 69 C15 62 4 52 4 35 V11 Z" fill="#14452C" stroke="#C9A24B" stroke-width="4"></path><ellipse cx="30" cy="37" rx="13" ry="8" fill="#9A5530" transform="rotate(-28 30 37)"></ellipse><path d="M24 40.5 L36 33.5" stroke="#F4F1E4" stroke-width="2"></path></svg>
+<span style="font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-size: 21px; letter-spacing: .03em; line-height: 1">{{leagueUpper}}</span>
+</a>
+<button type="button" aria-label="Switch theme" onClick="{{toggleMode}}" style="margin-left: auto; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--soft); cursor: pointer">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+</button>
+</header>
+<nav aria-label="Site sections" style="display: flex; gap: 2px; overflow-x: auto; padding: 0 8px; border-bottom: 1px solid var(--line)">
+<a href="index.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">This week</a>
+<a href="season.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Season</a>
+<a href="coaches.html" aria-current="page" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 700; color: var(--ink); text-decoration: none; box-shadow: inset 0 -3px 0 var(--gold)">Coaches</a>
+<a href="teams.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Teams</a>
+<a href="rosters.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Rosters</a>
+<a href="rules.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Rules</a>
+</nav>
+
+<section aria-label="Pick a coach" style="padding: 16px 16px 0; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 12.5px; font-weight: 700; color: var(--soft)">Whose page?</span>
+<div role="group" aria-label="Coaches" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="8">
+<button type="button" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="min-height: 40px; padding: 0 13px; border-radius: 20px; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}">{{c.name}}</button>
+</sc-for>
+</div>
+</section>
+
+<section data-wide="full" data-pad="" aria-labelledby="coach-name" style="margin: 18px 16px 0; padding: 20px 16px 16px; background-color: #0A1F14; background-image: repeating-linear-gradient(90deg, rgba(239,237,224,.045) 0 1px, transparent 1px 36px); color: #EFEDE0; border-radius: 8px; border-bottom: 4px solid #C9A24B; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; font-weight: 700; color: #C9A24B">{{asOf}}</span>
+<h1 id="coach-name" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 48px; line-height: 1">{{name}}</h1>
+<span style="font-size: 15px; color: #C3D2C7">{{summary}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div style="display: flex; flex-direction: column; padding: 10px; background: #051109; border: 1px solid #1D4530; border-radius: 6px"><b style="font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 28px; line-height: 1.1">{{place}}</b><span style="font-size: 12px; color: #8FA898">place</span></div>
+<div style="display: flex; flex-direction: column; padding: 10px; background: #051109; border: 1px solid #1D4530; border-radius: 6px"><b style="font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 28px; line-height: 1.1; color: #C9A24B">{{pts}}</b><span style="font-size: 12px; color: #8FA898">points</span></div>
+<div style="display: flex; flex-direction: column; padding: 10px; background: #051109; border: 1px solid #1D4530; border-radius: 6px"><b style="font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 28px; line-height: 1.1">{{odds}}</b><span style="font-size: 12px; color: #8FA898">to win it ({{oddsChange}})</span></div>
+</div>
+<span style="font-size: 12.5px; color: #8FA898">Likely regular-season finish {{range}} points. That's where 8 in 10 of {{sims}} simulated seasons landed, using each team's record so far blended with its Vegas total. Playoff bonuses aren't included.</span>
+</section>
+
+<section data-wide="left" aria-labelledby="teams-h" style="padding: 30px 16px 0; display: flex; flex-direction: column; gap: 10px">
+<h2 id="teams-h" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05">{{teamsTitle}}</h2>
+<sc-for list="{{teams}}" as="t" hint-placeholder-count="4">
+<article style="background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 14px 12px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: baseline; gap: 10px">
+<b style="font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 26px; line-height: 1; letter-spacing: .02em">{{t.abbr}}</b>
+<span style="font-size: 15px; font-weight: 600">{{t.nick}}</span>
+<span style="margin-left: auto; font-family: Anton, Impact, sans-serif; font-size: 22px">{{t.rec}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px">
+<sc-for list="{{t.games}}" as="g" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; align-items: center; padding: 6px 4px; background: var(--panel2); border: 1px solid var(--line); border-radius: 5px; line-height: 1.3">
+<span style="font-size: 11px; color: var(--soft)">{{g.wk}}</span>
+<b style="font-size: 13.5px; color: {{g.color}}">{{g.res}}</b>
+<span style="font-size: 12px; color: var(--soft)">{{g.opp}}</span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--soft)">
+<span><b style="color: var(--ink)">{{t.pts}}</b> pts to {{name}}</span>
+<span>Pace <b style="color: var(--ink)">{{t.pace}}</b> vs Vegas {{t.vegas}} <b style="color: {{t.diffColor}}">{{t.diff}}</b></span>
+<span>Bye <b style="color: var(--ink)">Week {{t.bye}}</b></span>
+</div>
+<sc-if value="{{t.hasNext}}" hint-placeholder-val="{{true}}"><div style="display: flex; align-items: center; gap: 8px; padding-top: 9px; border-top: 1px solid var(--line); font-size: 13.5px">
+<span style="font-size: 11.5px; font-weight: 800; letter-spacing: .04em; color: var(--gold)">NEXT</span>
+<span>{{t.next}}</span>
+</div></sc-if>
+</article>
+</sc-for>
+</section>
+
+<div data-wide="right" data-stack="" style="display: contents">
+<sc-if value="{{showRooting}}" hint-placeholder-val="{{true}}"><section aria-labelledby="root-h" style="padding: 30px 16px 0; display: flex; flex-direction: column; gap: 10px">
+<h2 id="root-h" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05">{{rootTitle}}</h2>
+<ul style="margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line)">
+<sc-for list="{{rooting}}" as="r" hint-placeholder-count="3">
+<li style="display: flex; justify-content: space-between; gap: 10px; min-height: 44px; align-items: center; border-bottom: 1px dashed var(--line); font-size: 15px"><span>{{r.label}}</span><b style="color: var(--gold)">{{r.swing}}</b></li>
+</sc-for>
+</ul>
+<p style="margin: 0; font-size: 13px; color: var(--soft)">The number is how much the title odds swing between the two results, in percentage points. Games your teams aren't in count too.</p>
+</section></sc-if>
+
+<section aria-labelledby="vs-h" style="padding: 30px 16px 0; display: flex; flex-direction: column; gap: 10px">
+<h2 id="vs-h" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05">Against the group</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{vs}}" as="v" hint-placeholder-count="7">
+<div style="display: flex; justify-content: space-between; align-items: center; min-height: 44px; padding: 0 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; font-size: 14.5px"><span>vs {{v.name}}</span><b style="color: {{v.color}}">{{v.rec}}</b></div>
+</sc-for>
+</div>
+<p style="margin: 0; font-size: 13px; color: var(--soft)">{{selfNote}}</p>
+</section>
+</div>
+
+<footer style="margin-top: auto; padding: 36px 16px 40px; text-align: center; border-top: 1px solid var(--line)">
+<span style="font-size: 11.5px; font-weight: 700; letter-spacing: .08em; color: var(--up)">{{tagline}}</span>
+</footer>
+</div>
+</template>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Theme"},"$preview":{"width":390,"height":2250}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var self = this, st = this.state || {};
+    var mode = st.mode || this.props.mode || 'dark';
+    var P = window.POOL, N = window.NFL;
+    var C = P.coaches, ROSTER = P.roster, OWN = P.own, NICK = N.NICK, VEGAS = N.VEGAS, BYE = N.BYE;
+    var latest = P.latest, weeks = P.weeks;
+    var display = P.table(latest).order;
+    var sel = st.sel && C.indexOf(st.sel) >= 0 ? st.sel : display[0];
+    var UP = P.pending(latest).map(function (g) { return { day: g[0], a: g[1], h: g[2] }; });
+
+    // Title odds: simulate the rest of the regular season. Each team's chance to win a game blends its record so far
+    // with its preseason Vegas total (worth 17 games); a game between two teams uses the log5 formula.
+    // Seeded, so the numbers stay put between visits until the results change.
+    var simulate = function (k, games, runs) {
+      var w = {}, gp = {}, base = P.table(k).pts;
+      P.teams.forEach(function (t) { w[t] = 0; gp[t] = 0; });
+      weeks.slice(0, k).forEach(function (wk) { wk.forEach(function (g) {
+        gp[g.a]++; gp[g.h]++;
+        if (g.as === g.hs) { w[g.a] += 0.5; w[g.h] += 0.5; } else w[g.as > g.hs ? g.a : g.h] += 1;
+      }); });
+      var p = {}, left = {};
+      P.teams.forEach(function (t) { p[t] = (VEGAS[t] + w[t]) / (N.GAMES + gp[t]); left[t] = N.GAMES - gp[t]; });
+      games.forEach(function (g) { left[g.a]--; left[g.h]--; });
+      var seed = 20260910 + k * 7919;
+      var rnd = function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var x = Math.imul(seed ^ seed >>> 15, 1 | seed); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; return ((x ^ x >>> 14) >>> 0) / 4294967296; };
+      var share = {}, totals = {}, cond = games.map(function () { return [{}, {}, 0, 0]; });
+      C.forEach(function (c) { share[c] = 0; totals[c] = []; cond.forEach(function (x) { x[0][c] = 0; x[1][c] = 0; }); });
+      for (var s = 0; s < runs; s++) {
+        var tot = {}; C.forEach(function (c) { tot[c] = base[c]; });
+        var bits = games.map(function (g) {
+          var pa = p[g.a] * (1 - p[g.h]), ph = p[g.h] * (1 - p[g.a]), awayWins = rnd() < pa / (pa + ph);
+          var o = OWN[awayWins ? g.a : g.h]; if (o) tot[o] += 1;
+          return awayWins;
+        });
+        P.teams.forEach(function (t) {
+          var o = OWN[t]; if (!o) return;
+          for (var i = 0; i < left[t]; i++) if (rnd() < p[t]) tot[o] += 1;
+        });
+        var top = Math.max.apply(null, C.map(function (c) { return tot[c]; }));
+        var winners = C.filter(function (c) { return tot[c] === top; });
+        C.forEach(function (c) {
+          totals[c].push(tot[c]);
+          var sh = winners.indexOf(c) >= 0 ? 1 / winners.length : 0;
+          share[c] += sh;
+          bits.forEach(function (b, j) { cond[j][b ? 0 : 1][c] += sh; });
+        });
+        bits.forEach(function (b, j) { cond[j][b ? 2 : 3]++; });
+      }
+      var pct = function (c, q) { var xs = totals[c].slice().sort(function (a, b) { return a - b; }); return xs[Math.floor(q * (xs.length - 1))]; };
+      var res = { win: {}, p10: {}, p90: {}, ifAway: [], ifHome: [] };
+      C.forEach(function (c) { res.win[c] = share[c] / runs * 100; res.p10[c] = pct(c, 0.1); res.p90[c] = pct(c, 0.9); });
+      cond.forEach(function (x) {
+        var a = {}, h = {};
+        C.forEach(function (c) { a[c] = x[2] ? x[0][c] / x[2] * 100 : 0; h[c] = x[3] ? x[1][c] / x[3] * 100 : 0; });
+        res.ifAway.push(a); res.ifHome.push(h);
+      });
+      return res;
+    };
+    var RUNS = 4000;
+    if (!this.__sim) this.__sim = { now: simulate(latest, UP, RUNS), before: simulate(Math.max(latest - 1, 0), [], RUNS) };
+    var sim = this.__sim;
+
+    var pts = P.table(latest).pts, rec = {}, log = {}, h2h = {}, selfGames = {};
+    C.forEach(function (c) { selfGames[c] = 0; C.forEach(function (d) { h2h[c + '|' + d] = [0, 0, 0]; }); });
+    P.teams.forEach(function (t) { rec[t] = [0, 0, 0]; log[t] = []; });
+    weeks.forEach(function (games, wi) {
+      games.forEach(function (g) {
+        var tie = g.as === g.hs, awayWon = g.as > g.hs, win = awayWon ? g.a : g.h, lose = awayWon ? g.h : g.a;
+        if (tie) { rec[g.a][2]++; rec[g.h][2]++; } else { rec[win][0]++; rec[lose][1]++; }
+        var res = function (won) { return tie ? 'T ' : won ? 'W ' : 'L '; };
+        log[g.a].push({ wk: 'Wk ' + (wi + 1), res: res(awayWon) + g.as + '-' + g.hs, opp: '@ ' + g.h, color: awayWon && !tie ? 'var(--up)' : 'var(--soft)' });
+        log[g.h].push({ wk: 'Wk ' + (wi + 1), res: res(!awayWon) + g.hs + '-' + g.as, opp: 'vs ' + g.a, color: !awayWon && !tie ? 'var(--up)' : 'var(--soft)' });
+        var oa = OWN[g.a], oh = OWN[g.h];
+        if (!oa || !oh) return;
+        if (oa === oh) { selfGames[oa]++; return; }
+        if (tie) { h2h[oa + '|' + oh][2]++; h2h[oh + '|' + oa][2]++; return; }
+        h2h[OWN[win] + '|' + OWN[lose]][0]++; h2h[OWN[lose] + '|' + OWN[win]][1]++;
+      });
+    });
+    var lead = Math.max.apply(null, C.map(function (c) { return pts[c]; }));
+    var better = C.filter(function (c) { return pts[c] > pts[sel]; }).length;
+    var tied = C.some(function (c) { return c !== sel && pts[c] === pts[sel]; });
+    var place = (tied ? 'T-' : '') + P.ord(better + 1);
+    var leaders = display.filter(function (c) { return pts[c] === lead; });
+    var back = lead - pts[sel];
+    var summary = back === 0 ? (tied ? 'Tied for first.' : 'Alone in first.') : back + (back === 1 ? ' point' : ' points') + ' behind ' + P.list(leaders) + '.';
+    summary = ROSTER[sel].join(' · ') + '. ' + summary;
+    var ch = sim.now.win[sel] - sim.before.win[sel];
+    var teams = ROSTER[sel].map(function (t) {
+      var gp = rec[t][0] + rec[t][1] + rec[t][2], won = rec[t][0] + rec[t][2] / 2;
+      var pace = gp ? won / gp * N.GAMES : 0, d = pace - VEGAS[t];
+      var nx = UP.filter(function (g) { return g.a === t || g.h === t; })[0];
+      var next = '';
+      if (nx) { var opp = nx.a === t ? nx.h : nx.a; next = 'Week ' + latest + ' ' + (nx.a === t ? '@ ' : 'vs ') + NICK[opp] + ' (' + (OWN[opp] ? (P.isMe(OWN[opp]) ? 'me' : OWN[opp]) : 'nobody') + ') · ' + nx.day; }
+      return { abbr: t, nick: NICK[t], rec: P.fmtRec(rec[t]), games: log[t], pts: won,
+        pace: pace.toFixed(1), vegas: VEGAS[t], diff: (d >= 0 ? '+' : '') + d.toFixed(1), diffColor: d >= 0 ? 'var(--up)' : 'var(--soft)',
+        bye: BYE[t], hasNext: !!nx, next: next };
+    });
+    var rooting = UP.map(function (g, gi) {
+      var d = sim.now.ifAway[gi][sel] - sim.now.ifHome[gi][sel];
+      return { d: Math.abs(d), label: NICK[d > 0 ? g.a : g.h] + ' over ' + NICK[d > 0 ? g.h : g.a], swing: Math.abs(d).toFixed(1) };
+    }).sort(function (x, y) { return y.d - x.d; }).slice(0, 3);
+    var vs = display.filter(function (c) { return c !== sel; }).map(function (c) {
+      var wl = h2h[sel + '|' + c];
+      return { name: c, rec: wl[0] + wl[1] + wl[2] ? P.fmtRec(wl) : 'Not yet', color: wl[0] > wl[1] ? 'var(--up)' : wl[0] < wl[1] ? 'var(--soft)' : 'var(--ink)' };
+    });
+    var sg = selfGames[sel];
+    var chips = display.map(function (c) {
+      var on = c === sel;
+      return { name: c, pressed: on ? 'true' : 'false', pick: function () { self.setState({ sel: c }); },
+        border: on ? 'var(--gold)' : 'var(--line)', bg: on ? 'var(--gold)' : 'var(--panel)', fg: on ? 'var(--ongold)' : 'var(--ink)' };
+    });
+    var live = UP.length > 0;
+    return { modeClass: 'wwp-' + mode, toggleMode: function () { self.setState({ mode: mode === 'dark' ? 'light' : 'dark' }); },
+      chips: chips, name: sel, summary: summary, place: place, pts: pts[sel], odds: sim.now.win[sel].toFixed(1) + '%',
+      asOf: live ? 'Week ' + latest + ' in progress' : 'After Week ' + latest,
+      oddsChange: (ch >= 0 ? '+' : '') + ch.toFixed(1) + (latest > 1 ? ' since Week ' + (latest - 1) : ' since preseason'),
+      range: P.fmt(sim.now.p10[sel]) + '–' + P.fmt(sim.now.p90[sel]), sims: RUNS.toLocaleString('en-US'),
+      teamsTitle: P.poss(sel) + ' ' + P.word(ROSTER[sel].length) + ' teams', teams: teams,
+      showRooting: rooting.length > 0, rootTitle: 'Week ' + latest + ' rooting guide', rooting: rooting, vs: vs,
+      selfNote: sg ? P.poss(sel) + ' own teams have played each other ' + (sg === 1 ? 'once' : sg === 2 ? 'twice' : sg + ' times') + ', a guaranteed point either way.' : P.poss(sel) + ' own teams haven’t played each other yet.' };
+  }
+}
+</script>
+</body>
+</html>

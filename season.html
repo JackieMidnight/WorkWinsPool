@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// Paint the right background before the page renders: the saved theme, else light on wide screens and dark on phones.
+try { document.documentElement.setAttribute('data-theme', localStorage.getItem('wwp-theme') || (window.matchMedia('(min-width: 1024px)').matches ? 'light' : 'dark')); } catch (e) {}
+</script>
+<title>Work Wins Pool, season so far</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Libre+Franklin:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:"Libre Franklin",system-ui,-apple-system,"Segoe UI",sans-serif;background:#0A1F14}
+a{color:#C9A24B}a:hover{color:#E2BE6A}
+.wwp-dark{--bg:#0A1F14;--panel:#102A1B;--panel2:#0D2518;--ink:#EFEDE0;--soft:#9DB5A4;--line:#1D4530;--gold:#C9A24B;--goldsoft:rgba(201,162,75,.16);--up:#9CCB55;--dn:#8A9C90;--track:#1B3A27;--chip:#163A26;--ongold:#0A1F14}
+.wwp-light{--bg:#EEF2EA;--panel:#FFFFFF;--panel2:#F6F8F3;--ink:#0C2418;--soft:#4A6353;--line:#C7D6C7;--gold:#8A6B1C;--goldsoft:rgba(138,107,28,.12);--up:#2E6A1E;--dn:#66786C;--track:#DBE3D9;--chip:#E3EADF;--ongold:#FFFFFF}
+html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{background:#0A1F14}
+</style>
+<script src="nfl.js?v=1" defer></script>
+<script src="league.js?v=1" defer></script>
+<script src="pool.js?v=1" defer></script>
+<script src="support.js?v=1" defer></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template">
+<div class="{{modeClass}}" style="width: 100%; max-width: 480px; min-height: 100vh; margin: 0 auto; box-sizing: border-box; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; font-size: 16px; line-height: 1.5">
+
+<header style="display: flex; align-items: center; gap: 10px; height: 60px; padding: 0 16px; border-bottom: 1px solid var(--line)">
+<a href="index.html" style="display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink)">
+<svg width="26" height="31" viewBox="0 0 60 72" aria-hidden="true"><path d="M30 3 L56 11 V35 C56 52 45 62 30 69 C15 62 4 52 4 35 V11 Z" fill="#14452C" stroke="#C9A24B" stroke-width="4"></path><ellipse cx="30" cy="37" rx="13" ry="8" fill="#9A5530" transform="rotate(-28 30 37)"></ellipse><path d="M24 40.5 L36 33.5" stroke="#F4F1E4" stroke-width="2"></path></svg>
+<span style="font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-size: 21px; letter-spacing: .03em; line-height: 1">{{leagueUpper}}</span>
+</a>
+<button type="button" aria-label="Switch theme" onClick="{{toggleMode}}" style="margin-left: auto; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--soft); cursor: pointer">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+</button>
+</header>
+<nav aria-label="Site sections" style="display: flex; gap: 2px; overflow-x: auto; padding: 0 8px; border-bottom: 1px solid var(--line)">
+<a href="index.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">This week</a>
+<a href="season.html" aria-current="page" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 700; color: var(--ink); text-decoration: none; box-shadow: inset 0 -3px 0 var(--gold)">Season</a>
+<a href="coaches.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Coaches</a>
+<a href="teams.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Teams</a>
+<a href="rosters.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Rosters</a>
+<a href="rules.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Rules</a>
+</nav>
+
+<section data-wide="left" style="padding: 26px 16px 0; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h1 style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 42px; line-height: 1">The season so far</h1>
+<p style="margin: 0; font-size: 15px; color: var(--soft)">Every week stays here. Tap one to reopen its standings and results.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{cards}}" as="k" hint-placeholder-count="4">
+<a href="{{k.href}}" style="display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px; background: {{k.bg}}; border: 1px {{k.borderStyle}} {{k.border}}; border-radius: 6px; text-decoration: none; color: var(--ink)">
+<span style="display: flex; flex-direction: column; align-items: center; line-height: 1"><span style="font-size: 11px; font-weight: 700; color: var(--soft)">WEEK</span><span style="font-family: Anton, Impact, sans-serif; font-size: 30px; color: {{k.numColor}}">{{k.n}}</span></span>
+<span style="display: flex; flex-direction: column; min-width: 0"><b style="font-size: 16px">{{k.title}}</b><span style="font-size: 13px; color: var(--soft)">{{k.sub}}</span></span>
+<sc-if value="{{k.latest}}" hint-placeholder-val="{{false}}"><span style="font-size: 11.5px; font-weight: 800; padding: 3px 7px; border-radius: 4px; background: var(--gold); color: var(--ongold)">LATEST</span></sc-if>
+<sc-if value="{{k.live}}" hint-placeholder-val="{{false}}"><span style="font-size: 11.5px; font-weight: 800; padding: 3px 7px; border-radius: 4px; border: 1px solid var(--gold); color: var(--gold)">IN PROGRESS</span></sc-if>
+<sc-if value="{{k.arrow}}" hint-placeholder-val="{{true}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color: var(--soft)"><path d="M9 6l6 6-6 6"></path></svg></sc-if>
+</a>
+</sc-for>
+</div>
+</section>
+
+<section data-wide="right" aria-labelledby="chart-h" style="padding: 38px 16px 0; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h2 id="chart-h" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05">Rank, week by week</h2>
+<p style="margin: 0; font-size: 14.5px; color: var(--soft)">Pick a coach to follow their line. Ties share a spot, so some lines sit on top of each other.</p>
+</div>
+<div role="group" aria-label="Coach to highlight" style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="8">
+<button type="button" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}" style="min-height: 40px; padding: 0 13px; border-radius: 20px; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; border: 1px solid {{c.border}}; background: {{c.bg}}; color: {{c.fg}}">{{c.name}}</button>
+</sc-for>
+</div>
+<div style="position: relative; width: 358px; max-width: 100%; overflow-x: auto; height: {{chartH}}px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-sizing: border-box">
+<svg width="356" dc-height="{{svgH}}" aria-hidden="true" style="position: absolute; left: 0; top: 0">
+<sc-for list="{{rows}}" as="y" hint-placeholder-count="8"><line x1="34" dc-y1="{{y.y}}" x2="336" dc-y2="{{y.y}}" stroke-width="1" style="stroke: var(--line)"></line><text x="24" dc-y="{{y.ty}}" font-size="11" font-family="Libre Franklin, sans-serif" text-anchor="end" style="fill: var(--soft)">{{y.label}}</text></sc-for>
+</svg>
+<sc-for list="{{lines}}" as="l" hint-placeholder-count="8">
+<svg width="356" dc-height="{{svgH}}" aria-hidden="true" style="position: absolute; left: 0; top: 0"><polyline dc-points="{{l.pts}}" fill="none" stroke-width="{{l.w}}" stroke-linejoin="round" stroke-linecap="round" style="stroke: {{l.color}}; opacity: {{l.op}}"></polyline></svg>
+</sc-for>
+<sc-for list="{{dots}}" as="d" hint-placeholder-count="3">
+<span style="position: absolute; left: {{d.left}}px; top: {{d.top}}px; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 3px var(--panel)"></span>
+</sc-for>
+<sc-for list="{{wkLabels}}" as="w" hint-placeholder-count="3">
+<span style="position: absolute; left: {{w.left}}px; top: {{labelTop}}px; width: {{w.width}}px; text-align: center; font-size: 11.5px; font-weight: 600; color: var(--soft)">{{w.label}}</span>
+</sc-for>
+</div>
+<p style="margin: 0; font-size: 14.5px"><b>{{sel}}</b>: {{selPath}}</p>
+</section>
+
+<section aria-labelledby="h2h-h" style="padding: 38px 16px 0; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h2 id="h2h-h" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05">Season head-to-head</h2>
+<p style="margin: 0; font-size: 14.5px; color: var(--soft)">Every time two of our teams have met. Read across: that row's record against the column.</p>
+</div>
+<div role="table" aria-label="Head-to-head records" style="display: flex; flex-direction: column; gap: 2px">
+<div role="row" style="display: grid; grid-template-columns: 64px repeat({{nCols}}, minmax(0, 1fr)); gap: 2px">
+<span role="columnheader"></span>
+<sc-for list="{{cols}}" as="c" hint-placeholder-count="8"><span role="columnheader" style="font-size: 11px; font-weight: 600; color: var(--soft); text-align: center">{{c}}</span></sc-for>
+</div>
+<sc-for list="{{grid}}" as="row" hint-placeholder-count="8">
+<div role="row" style="display: grid; grid-template-columns: 64px repeat({{nCols}}, minmax(0, 1fr)); gap: 2px">
+<span role="rowheader" style="font-size: 12.5px; font-weight: 700; align-self: center; color: {{row.nameColor}}">{{row.name}}</span>
+<sc-for list="{{row.cells}}" as="cell" hint-placeholder-count="8">
+<span role="cell" style="display: flex; align-items: center; justify-content: center; height: 32px; border-radius: 3px; font-size: 11.5px; font-weight: 700; font-variant-numeric: tabular-nums; background: {{cell.bg}}; color: {{cell.fg}}; border: {{cell.border}}">{{cell.t}}</span>
+</sc-for>
+</div>
+</sc-for>
+</div>
+<p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: var(--soft)">{{h2hNote}}</p>
+</section>
+
+<footer style="margin-top: auto; padding: 36px 16px 40px; text-align: center; border-top: 1px solid var(--line)">
+<span style="font-size: 11.5px; font-weight: 700; letter-spacing: .08em; color: var(--up)">{{tagline}}</span>
+</footer>
+</div>
+</template>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Theme"},"$preview":{"width":390,"height":2000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var st = this.state || {};
+    var mode = st.mode || this.props.mode || 'dark';
+    var P = window.POOL, C = P.coaches, OWN = P.own, latest = P.latest;
+    // Head-to-head counts every finished game; the rank chart stops at the last complete week.
+    var h2h = {}, self2 = {};
+    C.forEach(function (c) { self2[c] = 0; C.forEach(function (d) { h2h[c + '|' + d] = [0, 0, 0]; }); });
+    P.weeks.forEach(function (games) {
+      games.forEach(function (g) {
+        var oa = OWN[g.a], oh = OWN[g.h];
+        if (!oa || !oh) return;
+        if (oa === oh) { self2[oa] += 1; return; }
+        if (g.as === g.hs) { h2h[oa + '|' + oh][2] += 1; h2h[oh + '|' + oa][2] += 1; return; }
+        var ow = g.as > g.hs ? oa : oh, ol = g.as > g.hs ? oh : oa;
+        h2h[ow + '|' + ol][0] += 1; h2h[ol + '|' + ow][1] += 1;
+      });
+    });
+    var n = P.lastFinal;
+    var rankHist = {}; C.forEach(function (c) { rankHist[c] = []; });
+    for (var w = 1; w <= n; w++) { var tw = P.table(w); C.forEach(function (c) { rankHist[c].push(tw.rank[c]); }); }
+    var now = P.table(latest);
+    var display = now.order;
+    var sel = st.sel && C.indexOf(st.sel) >= 0 ? st.sel : display[0];
+
+    var cards = [];
+    for (var k = latest; k >= 1; k--) {
+      var live = P.live(k), t = P.table(k), lead = t.order.filter(function (c) { return t.rank[c] === 1; });
+      cards.push({ n: k, href: P.weekHref(k), title: live ? 'Live standings so far' : P.headline(k),
+        sub: 'Games ' + P.weekDates(k) + ' · ' + (lead.length > 1 ? 'Leaders: ' : 'Leader: ') + P.list(lead) + ', ' + t.pts[lead[0]],
+        latest: !live && k === P.lastFinal, live: live, arrow: !live && k !== P.lastFinal,
+        bg: live ? 'transparent' : 'var(--panel)', borderStyle: live ? 'dashed' : 'solid',
+        border: live || k === P.lastFinal ? 'var(--gold)' : 'var(--line)', numColor: k === P.lastFinal && !live ? 'var(--gold)' : 'var(--ink)' });
+    }
+
+    var L = 34, R = 28, T = 14, step = 28;
+    var xAt = function (i) { return n <= 1 ? L : L + i * (356 - L - R) / (n - 1); };
+    var yAt = function (r) { return T + (r - 1) * step; };
+    var rows = C.map(function (c, i) { return { y: yAt(i + 1), ty: yAt(i + 1) + 4, label: i === 0 ? '1st' : i === C.length - 1 ? P.ord(i + 1) : String(i + 1) }; });
+    var svgH = yAt(C.length) + 28;
+    var lines = n < 2 ? [] : C.filter(function (c) { return c !== sel; }).concat([sel]).map(function (c) {
+      return { pts: rankHist[c].map(function (r, i) { return xAt(i).toFixed(1) + ',' + yAt(r); }).join(' '),
+        color: c === sel ? 'var(--gold)' : 'var(--soft)', w: c === sel ? 3.5 : 1.5, op: c === sel ? 1 : 0.45 };
+    });
+    var dots = rankHist[sel].map(function (r, i) { return { left: (xAt(i) - 7).toFixed(1), top: yAt(r) - 7 }; });
+    // Spell out "Week 1" while there's room, then just the number.
+    var roomy = n <= 6, lw = roomy ? 50 : 24;
+    var wkLabels = rankHist[sel].map(function (r, i) { return { left: (xAt(i) - lw / 2).toFixed(1), width: lw, label: roomy ? 'Week ' + (i + 1) : String(i + 1) }; });
+    var tie = function (c, i) { var r = rankHist[c][i]; var shared = C.some(function (d) { return d !== c && rankHist[d][i] === r; }); return (shared ? 'T' : '') + r; };
+    var selPath = (n ? rankHist[sel].map(function (r, i) { return tie(sel, i); }).join(' → ') : 'No complete weeks yet') + ' (' + P.table(n).pts[sel] + ' pts)';
+    var chips = display.map(function (c) {
+      var on = c === sel;
+      return { name: c, pressed: on ? 'true' : 'false', pick: function () { self.setState({ sel: c }); },
+        border: on ? 'var(--gold)' : 'var(--line)', bg: on ? 'var(--gold)' : 'var(--panel)', fg: on ? 'var(--ongold)' : 'var(--ink)' };
+    });
+    var grid = display.map(function (r) {
+      return { name: r, nameColor: r === sel ? 'var(--gold)' : 'var(--ink)', cells: display.map(function (c) {
+        if (r === c) return { t: '—', bg: 'transparent', fg: 'var(--soft)', border: '1px solid transparent' };
+        var wl = h2h[r + '|' + c], w = wl[0], l = wl[1];
+        if (w + l + wl[2] === 0) return { t: '', bg: 'transparent', fg: 'var(--soft)', border: '1px dashed var(--line)' };
+        return { t: P.fmtRec(wl), border: '1px solid transparent',
+          bg: w > l ? 'color-mix(in srgb, var(--up) 30%, var(--panel))' : w < l ? 'color-mix(in srgb, var(--dn) 22%, var(--panel))' : 'var(--track)',
+          fg: w < l ? 'var(--soft)' : 'var(--ink)' };
+      }) };
+    });
+
+    // Sweeps (3-0 or better, no losses) and games between a coach's own teams
+    var sweeps = [];
+    display.forEach(function (r) { display.forEach(function (c) {
+      var wl = h2h[r + '|' + c]; if (r !== c && wl[0] >= 3 && wl[1] === 0 && wl[2] === 0) sweeps.push(r + ' is ' + wl[0] + '-0 against ' + c);
+    }); });
+    var selfies = display.filter(function (c) { return self2[c]; }).map(function (c) { return c + ' (' + self2[c] + ')'; });
+    var h2hNote = (sweeps.length ? P.cap(P.word(sweeps.length)) + (sweeps.length === 1 ? ' sweep' : ' sweeps') + ' so far: ' + P.list(sweeps) + '. ' : '') +
+      'Empty boxes are pairs whose teams haven’t met yet. ' +
+      (selfies.length ? 'Games between a coach’s own teams don’t count here: ' + P.list(selfies) + '.' : 'No coach has had two of their own teams meet yet.');
+
+    return { modeClass: 'wwp-' + mode, toggleMode: function () { self.setState({ mode: mode === 'dark' ? 'light' : 'dark' }); },
+      cards: cards, chips: chips, lines: lines, dots: dots, wkLabels: wkLabels, sel: sel, selPath: selPath,
+      rows: rows, svgH: svgH, chartH: svgH + 2, labelTop: yAt(C.length) + 6, nCols: display.length,
+      cols: display.map(function (c) { return c.slice(0, 3); }), grid: grid, h2hNote: h2hNote };
+  }
+}
+</script>
+</body>
+</html>
