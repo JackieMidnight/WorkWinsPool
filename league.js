@@ -8,9 +8,9 @@ window.LEAGUE = {
 
   NAME: 'Work Wins Pool',
   FIELD_LABEL: 'WORK', // printed in the end zones of the field drawing on the Rules page
-  COMMISSIONER: '', // e.g. 'Filed by Pat, commissioner.' Leave empty to leave it off.
+  COMMISSIONER: 'Filed by Jack.', // footer line on the week pages. Leave empty to leave it off.
   // The coach who writes the site, if any. Their name shows as "me" / "My" in places. Leave empty for none.
-  ME: '',
+  ME: 'Jack',
 
   // Each coach's four teams. If the pick order is ever known, list it in DRAFT instead
   // ('Name TEAM', top pick first) and the site will show pick numbers too.
