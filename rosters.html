@@ -17,10 +17,10 @@ a{color:#C9A24B}a:hover{color:#E2BE6A}
 .wwp-light{--bg:#EEF2EA;--panel:#FFFFFF;--panel2:#F6F8F3;--ink:#0C2418;--soft:#4A6353;--line:#C7D6C7;--gold:#8A6B1C;--goldsoft:rgba(138,107,28,.12);--up:#2E6A1E;--dn:#66786C;--track:#DBE3D9;--chip:#E3EADF;--ongold:#FFFFFF;--reg:#2F6B45}
 html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{background:#0A1F14}
 </style>
-<script src="nfl.js?v=1" defer></script>
-<script src="league.js?v=1" defer></script>
-<script src="pool.js?v=1" defer></script>
-<script src="support.js?v=1" defer></script>
+<script src="nfl.js?v=2" defer></script>
+<script src="league.js?v=2" defer></script>
+<script src="pool.js?v=2" defer></script>
+<script src="support.js?v=2" defer></script>
 </head>
 <body>
 <div id="dc-root"></div>
@@ -55,13 +55,13 @@ html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{backgr
 <article style="background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 6px">
 <div style="display: flex; align-items: baseline; gap: 8px">
 <h2 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 24px; line-height: 1.1">{{r.name}}</h2>
-<span style="font-size: 12.5px; color: var(--soft)">Picks {{r.picks}}</span>
+<sc-if value="{{hasPicks}}" hint-placeholder-val="{{false}}"><span style="font-size: 12.5px; color: var(--soft)">Picks {{r.picks}}</span></sc-if>
 </div>
 <div role="table" aria-label="{{r.name}}'s teams" style="display: flex; flex-direction: column">
-<div role="row" style="display: grid; grid-template-columns: 26px minmax(0, 1fr) 50px 44px 36px; gap: 6px; font-size: 11px; font-weight: 600; color: var(--soft); padding-bottom: 3px; border-bottom: 1px solid var(--line)"><span role="columnheader">Pick</span><span role="columnheader">Team</span><span role="columnheader" style="text-align: right">2025</span><span role="columnheader" style="text-align: right">Vegas</span><span role="columnheader" style="text-align: right">Bye</span></div>
+<div role="row" style="display: grid; grid-template-columns: {{cols}}; gap: 6px; font-size: 11px; font-weight: 600; color: var(--soft); padding-bottom: 3px; border-bottom: 1px solid var(--line)"><sc-if value="{{hasPicks}}" hint-placeholder-val="{{false}}"><span role="columnheader">Pick</span></sc-if><span role="columnheader">Team</span><span role="columnheader" style="text-align: right">2025</span><span role="columnheader" style="text-align: right">Vegas</span><span role="columnheader" style="text-align: right">Bye</span></div>
 <sc-for list="{{r.teams}}" as="t" hint-placeholder-count="4">
-<div role="row" style="display: grid; grid-template-columns: 26px minmax(0, 1fr) 50px 44px 36px; gap: 6px; align-items: baseline; height: 30px; padding-top: 5px; border-bottom: 1px solid var(--line); font-size: 14px">
-<span role="cell" style="font-size: 12px; color: var(--soft)">{{t.pick}}</span>
+<div role="row" style="display: grid; grid-template-columns: {{cols}}; gap: 6px; align-items: baseline; height: 30px; padding-top: 5px; border-bottom: 1px solid var(--line); font-size: 14px">
+<sc-if value="{{hasPicks}}" hint-placeholder-val="{{false}}"><span role="cell" style="font-size: 12px; color: var(--soft)">{{t.pick}}</span></sc-if>
 <span role="cell" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><b style="letter-spacing: .02em">{{t.abbr}}</b> {{t.nick}}</span>
 <span role="cell" style="text-align: right; font-variant-numeric: tabular-nums">{{t.last}}</span>
 <span role="cell" style="text-align: right; font-variant-numeric: tabular-nums">{{t.vegas}}</span>
@@ -72,7 +72,7 @@ html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{backgr
 <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; color: var(--soft)"><span>2025 replay <b style="color: var(--ink)">{{r.replay}}</b></span><span>Vegas total <b style="color: var(--ink)">{{r.vegasSum}}</b></span></div>
 </article>
 </sc-for>
-<p style="margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--soft)">2025 is last season's regular-season record. Vegas is each team's preseason win total from September 9. Bye is the week off.</p>
+<p style="margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--soft)">2025 is last season's regular-season record. Vegas is each team's preseason win total from the league's roster sheet. Bye is the week off.</p>
 </section>
 
 <section data-wide="left" aria-labelledby="replay-h" style="padding: 36px 16px 0; display: flex; flex-direction: column; gap: 12px">
@@ -135,7 +135,8 @@ class Component extends DCLogic {
     var sums = {};
     var rosters = order.map(function (c) {
       var reg = 0, bon = 0, vs = 0;
-      var teams = P.roster[c].map(function (t) {
+      var mine = P.hasPicks ? P.roster[c] : P.roster[c].slice().sort(function (a, b) { return VEGAS[b] - VEGAS[a]; });
+      var teams = mine.map(function (t) {
         var l = LAST[t]; reg += l[0] + l[2] * 0.5; bon += BONUS[t]; vs += VEGAS[t];
         return { pick: P.pickNo[t], abbr: t, nick: NICK[t], last: P.fmtRec(l), vegas: VEGAS[t], bye: BYE[t] };
       });
@@ -186,7 +187,8 @@ class Component extends DCLogic {
       (spanTxt.length ? ' No byes in Weeks ' + (spanTxt.length === 1 ? spanTxt[0] : spanTxt.slice(0, -1).join(', ') + ', or ' + spanTxt[spanTxt.length - 1]) + '.' : '');
 
     return { modeClass: 'wwp-' + mode, rosters: rosters, replay: replay, byes: byes,
-      intro: P.cap(P.word(P.perCoach)) + ' teams each, in the order they were picked. ' + L.DRAFT_NOTE,
+      hasPicks: P.hasPicks, cols: (P.hasPicks ? '26px ' : '') + 'minmax(0, 1fr) 50px 44px 36px',
+      intro: P.cap(P.word(P.perCoach)) + ' teams each' + (P.hasPicks ? ', in the order they were picked.' : ', ranked by Vegas win total.') + (L.DRAFT_NOTE ? ' ' + L.DRAFT_NOTE : ''),
       replayIntro: replayIntro, replayNote: replayNote, byeNote: byeNote };
   }
 }

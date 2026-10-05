@@ -26,8 +26,8 @@ window.NFL = {
   },
 
   NICK: { ARI: 'Cardinals', ATL: 'Falcons', BAL: 'Ravens', BUF: 'Bills', CAR: 'Panthers', CHI: 'Bears', CIN: 'Bengals', CLE: 'Browns', DAL: 'Cowboys', DEN: 'Broncos', DET: 'Lions', GB: 'Packers', HOU: 'Texans', IND: 'Colts', JAX: 'Jaguars', KC: 'Chiefs', LAC: 'Chargers', LAR: 'Rams', LV: 'Raiders', MIA: 'Dolphins', MIN: 'Vikings', NE: 'Patriots', NO: 'Saints', NYG: 'Giants', NYJ: 'Jets', PHI: 'Eagles', PIT: 'Steelers', SEA: 'Seahawks', SF: '49ers', TB: 'Buccaneers', TEN: 'Titans', WAS: 'Commanders' },
-  // Preseason win totals from September 9
-  VEGAS: { BUF: 10.5, CIN: 10.5, TB: 8.5, CLE: 5.5, SEA: 10.5, LV: 5.5, GB: 9.5, IND: 7.5, PHI: 10.5, JAX: 8.5, PIT: 8.5, TEN: 6.5, BAL: 11.5, DET: 10.5, MIN: 8.5, ATL: 7.5, KC: 10.5, NYG: 7.5, HOU: 9.5, CAR: 7.5, NYJ: 5.5, DEN: 9.5, NE: 10.5, NO: 7.5, CHI: 9.5, ARI: 3.5, LAR: 11.5, DAL: 9.5, SF: 9.5, LAC: 9.5, WAS: 7.5, MIA: 3.5 },
+  // Preseason win totals, as listed on the league's roster sheet
+  VEGAS: { BUF: 10.5, CIN: 9.5, TB: 8.5, CLE: 5.5, SEA: 10.5, LV: 5.5, GB: 10.5, IND: 7.5, PHI: 10.5, JAX: 8.5, PIT: 8.5, TEN: 6.5, BAL: 11.5, DET: 10.5, MIN: 8.5, ATL: 7.5, KC: 10.5, NYG: 7.5, HOU: 9.5, CAR: 7.5, NYJ: 5.5, DEN: 9.5, NE: 9.5, NO: 7.5, CHI: 9.5, ARI: 4.5, LAR: 11.5, DAL: 8.5, SF: 10.5, LAC: 9.5, WAS: 7.5, MIA: 4.5 },
   BYE: { CAR: 5, KC: 5, CIN: 6, DET: 6, MIA: 6, MIN: 6, BUF: 7, JAX: 7, LAC: 7, WAS: 7, HOU: 8, NO: 8, NYG: 8, SF: 8, PIT: 9, TEN: 9, CHI: 10, DEN: 10, PHI: 10, TB: 10, ATL: 11, CLE: 11, GB: 11, LAR: 11, NE: 11, SEA: 11, BAL: 13, IND: 13, LV: 13, NYJ: 13, ARI: 14, DAL: 14 },
 
   // 2025 regular season [wins, losses, ties]

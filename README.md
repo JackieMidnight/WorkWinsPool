@@ -18,14 +18,15 @@ The website for the Work Wins Pool 2026 season.
 
 | File | What's in it |
 | --- | --- |
-| `league.js` | Everything about this pool: its name, the coaches and the draft, buy-in, headlines. |
-| `nfl.js` | NFL facts only: scores, games still to play, Vegas totals, byes, last season. |
+| `league.js` | Everything about this pool: its name, the coaches and their teams, headlines. |
+| `nfl.js` | NFL facts only: scores, games still to play, Vegas totals (as on the league's roster sheet), byes, last season. |
 | `pool.js` | Works out owners, points and standings from the two files above. You shouldn't need to edit it. |
 
-**Setting up the league:** in `league.js`, replace the placeholder coaches (Alpha, Bravo, …) in `DRAFT`
-with the real draft, top pick first, one `'Name TEAM'` per pick. Fix `DRAFT_NOTE`, `BUY_IN` and the
-other lines to match, then set `SAMPLE: false` to remove the yellow banner. If the person who keeps the
-site is also a coach, put their name in `ME` and the site will say "me" and "My" for them.
+**Changing the rosters:** each coach's teams are in `ROSTERS` in `league.js`. If the pick order is
+ever known, list it in `DRAFT` instead (`'Name TEAM'`, top pick first) and the Rosters page will show
+pick numbers. A buy-in, a note about how the draft worked and a commissioner line can be added there
+too; each one stays off the site while it's empty. If the person who keeps the site is also a coach,
+put their name in `ME` and the site will say "me" and "My" for them.
 
 **Updating during a week:** in `nfl.js`, add each finished game to that week's part of `RESULTS`
 (away, home, away score, home score) and remove it from `PENDING`.
@@ -34,7 +35,7 @@ site is also a coach, put their name in `ME` and the site will say "me" and "My"
 games in `PENDING` under the new week number. The home page follows along by itself.
 
 **Headlines and write-ups:** each week gets an automatic headline. To write your own, add it to
-`HEADLINES` in `league.js`, e.g. `{ 5: 'Echo runs away with it' }`. To post a longer Tuesday write-up,
+`HEADLINES` in `league.js`, e.g. `{ 5: 'Doug runs away with it' }`. To post a longer Tuesday write-up,
 save it as `weekN.html` / `weekN-desktop.html` and add N to `WRITEUPS`; the week links then open it.
 
 ## How the pages work

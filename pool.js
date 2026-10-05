@@ -5,12 +5,21 @@
 (function () {
   var L = window.LEAGUE, N = window.NFL;
 
+  // Teams come from DRAFT (pick by pick) when the pick order is known, else from ROSTERS (coach: teams).
   var coaches = [], roster = {}, own = {}, pickNo = {};
-  L.DRAFT.forEach(function (d, i) {
-    var cut = d.lastIndexOf(' '), c = d.slice(0, cut).trim(), t = d.slice(cut + 1).trim();
-    if (!roster[c]) { roster[c] = []; coaches.push(c); }
-    roster[c].push(t); own[t] = c; pickNo[t] = i + 1;
-  });
+  var hasPicks = !!(L.DRAFT && L.DRAFT.length);
+  if (hasPicks) {
+    L.DRAFT.forEach(function (d, i) {
+      var cut = d.lastIndexOf(' '), c = d.slice(0, cut).trim(), t = d.slice(cut + 1).trim();
+      if (!roster[c]) { roster[c] = []; coaches.push(c); }
+      roster[c].push(t); own[t] = c; pickNo[t] = i + 1;
+    });
+  } else {
+    Object.keys(L.ROSTERS || {}).forEach(function (c) {
+      coaches.push(c); roster[c] = L.ROSTERS[c].slice();
+      roster[c].forEach(function (t) { own[t] = c; });
+    });
+  }
   var teams = Object.keys(N.NICK);
 
   var weeks = N.RESULTS ? N.RESULTS.split('/').map(function (w) {
@@ -78,7 +87,7 @@
   var weekHref = function (w) { return (L.WRITEUPS || []).indexOf(w) >= 0 ? 'week' + w + '.html' : 'week.html?w=' + w; };
 
   window.POOL = {
-    coaches: coaches, roster: roster, own: own, pickNo: pickNo, teams: teams,
+    coaches: coaches, roster: roster, own: own, pickNo: pickNo, hasPicks: hasPicks, teams: teams,
     weeks: weeks, latest: latest, pending: pending, live: function (w) { return pending(w).length > 0; },
     // the latest week whose games are all final
     lastFinal: pending(latest).length ? latest - 1 : latest,

@@ -17,10 +17,10 @@ a{color:#C9A24B}a:hover{color:#E2BE6A}
 .wwp-light{--bg:#EEF2EA;--panel:#FFFFFF;--panel2:#F6F8F3;--ink:#0C2418;--soft:#4A6353;--line:#C7D6C7;--gold:#8A6B1C;--goldsoft:rgba(138,107,28,.12);--up:#2E6A1E;--dn:#66786C;--track:#DBE3D9;--chip:#E3EADF;--ongold:#FFFFFF}
 html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{background:#0A1F14}
 </style>
-<script src="nfl.js?v=1" defer></script>
-<script src="league.js?v=1" defer></script>
-<script src="pool.js?v=1" defer></script>
-<script src="support.js?v=1" defer></script>
+<script src="nfl.js?v=2" defer></script>
+<script src="league.js?v=2" defer></script>
+<script src="pool.js?v=2" defer></script>
+<script src="support.js?v=2" defer></script>
 </head>
 <body>
 <div id="dc-root"></div>
@@ -141,7 +141,7 @@ class Component extends DCLogic {
     });
     return { modeClass: 'wwp-' + mode, toggleMode: function () { self.setState({ mode: mode === 'dark' ? 'light' : 'dark' }); },
       sorts: sorts, filters: filters, rows: rows, summary: summary,
-      paceNote: 'Pace is wins so far divided by games played, times ' + N.GAMES + '. Vegas is the preseason win total from September 9.' +
+      paceNote: 'Pace is wins so far divided by games played, times ' + N.GAMES + '. Vegas is the preseason win total from the league\u2019s roster sheet.' +
         (played && played < 8 ? ' ' + P.cap(P.word(played)) + ' games in, one win moves a team’s pace by ' + (N.GAMES / played).toFixed(1) + ', so read this loosely for now.' : '') };
   }
 }
