@@ -33,7 +33,7 @@ window.LEAGUE = {
   TAGLINE: '', // footer line; empty uses "FOUR TEAMS. ONE GOAL. BRAGGING RIGHTS FOR A YEAR."
 
   // Optional headline for a week, e.g. { 5: 'Doug runs away with it' }. Weeks without one get an automatic headline.
-  HEADLINES: {},
+  HEADLINES: { 4: 'Joe closes to one' },
   // Weeks that have a written Tuesday update saved as weekN.html (and weekN-desktop.html).
-  WRITEUPS: []
+  WRITEUPS: [4]
 };

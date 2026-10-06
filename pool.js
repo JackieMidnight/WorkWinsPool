@@ -78,6 +78,69 @@
     return m1 + ' ' + start.getUTCDate() + '–' + (m1 === m2 ? '' : m2 + ' ') + end.getUTCDate();
   };
 
+  // The games still to come: what's left of the latest week while it's being played,
+  // else next week's schedule from nfl.js (empty if it hasn't been entered).
+  var upcoming = function () {
+    var left = pending(latest);
+    var week = left.length ? latest : latest + 1;
+    var games = left.length ? left : ((N.SCHEDULE && N.SCHEDULE[week]) || []);
+    return { week: week, games: games.map(function (g) { return { day: g[0], a: g[1], h: g[2] }; }) };
+  };
+
+  // Title odds: simulate the rest of the regular season from the results through Week k. Each team's
+  // chance to win a game blends its record so far with its preseason Vegas total (worth 17 games); a game
+  // between two teams uses the log5 formula. `games` are played one by one so the odds can be split by
+  // their results; every other remaining game is drawn from the team's chance alone. Seeded, so the
+  // numbers stay put between visits until the results change.
+  var SIM_RUNS = 4000;
+  var simulate = function (k, games, runs) {
+    runs = runs || SIM_RUNS;
+    var w = {}, gp = {}, base = table(k).pts;
+    teams.forEach(function (t) { w[t] = 0; gp[t] = 0; });
+    weeks.slice(0, k).forEach(function (wk) { wk.forEach(function (g) {
+      gp[g.a]++; gp[g.h]++;
+      if (g.as === g.hs) { w[g.a] += 0.5; w[g.h] += 0.5; } else w[g.as > g.hs ? g.a : g.h] += 1;
+    }); });
+    var p = {}, left = {};
+    teams.forEach(function (t) { p[t] = (N.VEGAS[t] + w[t]) / (N.GAMES + gp[t]); left[t] = N.GAMES - gp[t]; });
+    games.forEach(function (g) { left[g.a]--; left[g.h]--; });
+    var seed = 20260910 + k * 7919;
+    var rnd = function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var x = Math.imul(seed ^ seed >>> 15, 1 | seed); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; return ((x ^ x >>> 14) >>> 0) / 4294967296; };
+    var share = {}, totals = {}, cond = games.map(function () { return [{}, {}, 0, 0]; });
+    coaches.forEach(function (c) { share[c] = 0; totals[c] = []; cond.forEach(function (x) { x[0][c] = 0; x[1][c] = 0; }); });
+    for (var s = 0; s < runs; s++) {
+      var tot = {}; coaches.forEach(function (c) { tot[c] = base[c]; });
+      var bits = games.map(function (g) {
+        var pa = p[g.a] * (1 - p[g.h]), ph = p[g.h] * (1 - p[g.a]), awayWins = rnd() < pa / (pa + ph);
+        var o = own[awayWins ? g.a : g.h]; if (o) tot[o] += 1;
+        return awayWins;
+      });
+      teams.forEach(function (t) {
+        var o = own[t]; if (!o) return;
+        for (var i = 0; i < left[t]; i++) if (rnd() < p[t]) tot[o] += 1;
+      });
+      var top = Math.max.apply(null, coaches.map(function (c) { return tot[c]; }));
+      var winners = coaches.filter(function (c) { return tot[c] === top; });
+      coaches.forEach(function (c) {
+        totals[c].push(tot[c]);
+        var sh = winners.indexOf(c) >= 0 ? 1 / winners.length : 0;
+        share[c] += sh;
+        bits.forEach(function (b, j) { cond[j][b ? 0 : 1][c] += sh; });
+      });
+      bits.forEach(function (b, j) { cond[j][b ? 2 : 3]++; });
+    }
+    var pct = function (c, q) { var xs = totals[c].slice().sort(function (a, b) { return a - b; }); return xs[Math.floor(q * (xs.length - 1))]; };
+    // win: title chance in percent; p10/p90: final-score range; ifAway/ifHome: title chance by each game's result
+    var res = { win: {}, p10: {}, p90: {}, ifAway: [], ifHome: [] };
+    coaches.forEach(function (c) { res.win[c] = share[c] / runs * 100; res.p10[c] = pct(c, 0.1); res.p90[c] = pct(c, 0.9); });
+    cond.forEach(function (x) {
+      var a = {}, h = {};
+      coaches.forEach(function (c) { a[c] = x[2] ? x[0][c] / x[2] * 100 : 0; h[c] = x[3] ? x[1][c] / x[3] * 100 : 0; });
+      res.ifAway.push(a); res.ifHome.push(h);
+    });
+    return res;
+  };
+
   var headline = function (w) {
     if (L.HEADLINES && L.HEADLINES[w]) return L.HEADLINES[w];
     if (pending(w).length) return 'Week ' + w + ' so far';
@@ -92,7 +155,7 @@
     // the latest week whose games are all final
     lastFinal: pending(latest).length ? latest - 1 : latest,
     table: table, perCoach: perCoach, list: list, fmtRec: fmtRec, fmt: fmt, ord: ord, isMe: isMe, poss: poss, word: word, cap: cap,
-    weekDates: weekDates, headline: headline, weekHref: weekHref,
+    weekDates: weekDates, headline: headline, weekHref: weekHref, upcoming: upcoming, simulate: simulate, SIM_RUNS: SIM_RUNS,
     // values every page template can use
     common: { leagueName: L.NAME, leagueUpper: L.NAME.toUpperCase(), tagline: tagline, commissioner: L.COMMISSIONER || '' }
   };

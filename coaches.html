@@ -17,10 +17,10 @@ a{color:#C9A24B}a:hover{color:#E2BE6A}
 .wwp-light{--bg:#EEF2EA;--panel:#FFFFFF;--panel2:#F6F8F3;--ink:#0C2418;--soft:#4A6353;--line:#C7D6C7;--gold:#8A6B1C;--goldsoft:rgba(138,107,28,.12);--up:#2E6A1E;--dn:#66786C;--track:#DBE3D9;--chip:#E3EADF;--ongold:#FFFFFF}
 html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{background:#0A1F14}
 </style>
-<script src="nfl.js?v=2" defer></script>
-<script src="league.js?v=2" defer></script>
-<script src="pool.js?v=2" defer></script>
-<script src="support.js?v=2" defer></script>
+<script src="nfl.js?v=3" defer></script>
+<script src="league.js?v=3" defer></script>
+<script src="pool.js?v=3" defer></script>
+<script src="support.js?v=3" defer></script>
 </head>
 <body>
 <div id="dc-root"></div>
@@ -136,58 +136,11 @@ class Component extends DCLogic {
     var latest = P.latest, weeks = P.weeks;
     var display = P.table(latest).order;
     var sel = st.sel && C.indexOf(st.sel) >= 0 ? st.sel : display[0];
-    var UP = P.pending(latest).map(function (g) { return { day: g[0], a: g[1], h: g[2] }; });
+    // While a week is being played, the games left in it; once it's final, next week's schedule.
+    var NEXT = P.upcoming(), UP = NEXT.games, upWeek = NEXT.week;
 
-    // Title odds: simulate the rest of the regular season. Each team's chance to win a game blends its record so far
-    // with its preseason Vegas total (worth 17 games); a game between two teams uses the log5 formula.
-    // Seeded, so the numbers stay put between visits until the results change.
-    var simulate = function (k, games, runs) {
-      var w = {}, gp = {}, base = P.table(k).pts;
-      P.teams.forEach(function (t) { w[t] = 0; gp[t] = 0; });
-      weeks.slice(0, k).forEach(function (wk) { wk.forEach(function (g) {
-        gp[g.a]++; gp[g.h]++;
-        if (g.as === g.hs) { w[g.a] += 0.5; w[g.h] += 0.5; } else w[g.as > g.hs ? g.a : g.h] += 1;
-      }); });
-      var p = {}, left = {};
-      P.teams.forEach(function (t) { p[t] = (VEGAS[t] + w[t]) / (N.GAMES + gp[t]); left[t] = N.GAMES - gp[t]; });
-      games.forEach(function (g) { left[g.a]--; left[g.h]--; });
-      var seed = 20260910 + k * 7919;
-      var rnd = function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var x = Math.imul(seed ^ seed >>> 15, 1 | seed); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; return ((x ^ x >>> 14) >>> 0) / 4294967296; };
-      var share = {}, totals = {}, cond = games.map(function () { return [{}, {}, 0, 0]; });
-      C.forEach(function (c) { share[c] = 0; totals[c] = []; cond.forEach(function (x) { x[0][c] = 0; x[1][c] = 0; }); });
-      for (var s = 0; s < runs; s++) {
-        var tot = {}; C.forEach(function (c) { tot[c] = base[c]; });
-        var bits = games.map(function (g) {
-          var pa = p[g.a] * (1 - p[g.h]), ph = p[g.h] * (1 - p[g.a]), awayWins = rnd() < pa / (pa + ph);
-          var o = OWN[awayWins ? g.a : g.h]; if (o) tot[o] += 1;
-          return awayWins;
-        });
-        P.teams.forEach(function (t) {
-          var o = OWN[t]; if (!o) return;
-          for (var i = 0; i < left[t]; i++) if (rnd() < p[t]) tot[o] += 1;
-        });
-        var top = Math.max.apply(null, C.map(function (c) { return tot[c]; }));
-        var winners = C.filter(function (c) { return tot[c] === top; });
-        C.forEach(function (c) {
-          totals[c].push(tot[c]);
-          var sh = winners.indexOf(c) >= 0 ? 1 / winners.length : 0;
-          share[c] += sh;
-          bits.forEach(function (b, j) { cond[j][b ? 0 : 1][c] += sh; });
-        });
-        bits.forEach(function (b, j) { cond[j][b ? 2 : 3]++; });
-      }
-      var pct = function (c, q) { var xs = totals[c].slice().sort(function (a, b) { return a - b; }); return xs[Math.floor(q * (xs.length - 1))]; };
-      var res = { win: {}, p10: {}, p90: {}, ifAway: [], ifHome: [] };
-      C.forEach(function (c) { res.win[c] = share[c] / runs * 100; res.p10[c] = pct(c, 0.1); res.p90[c] = pct(c, 0.9); });
-      cond.forEach(function (x) {
-        var a = {}, h = {};
-        C.forEach(function (c) { a[c] = x[2] ? x[0][c] / x[2] * 100 : 0; h[c] = x[3] ? x[1][c] / x[3] * 100 : 0; });
-        res.ifAway.push(a); res.ifHome.push(h);
-      });
-      return res;
-    };
-    var RUNS = 4000;
-    if (!this.__sim) this.__sim = { now: simulate(latest, UP, RUNS), before: simulate(Math.max(latest - 1, 0), [], RUNS) };
+    var RUNS = P.SIM_RUNS;
+    if (!this.__sim) this.__sim = { now: P.simulate(latest, UP), before: P.simulate(Math.max(latest - 1, 0), []) };
     var sim = this.__sim;
 
     var pts = P.table(latest).pts, rec = {}, log = {}, h2h = {}, selfGames = {};
@@ -221,7 +174,7 @@ class Component extends DCLogic {
       var pace = gp ? won / gp * N.GAMES : 0, d = pace - VEGAS[t];
       var nx = UP.filter(function (g) { return g.a === t || g.h === t; })[0];
       var next = '';
-      if (nx) { var opp = nx.a === t ? nx.h : nx.a; next = 'Week ' + latest + ' ' + (nx.a === t ? '@ ' : 'vs ') + NICK[opp] + ' (' + (OWN[opp] ? (P.isMe(OWN[opp]) ? 'me' : OWN[opp]) : 'nobody') + ') · ' + nx.day; }
+      if (nx) { var opp = nx.a === t ? nx.h : nx.a; next = 'Week ' + upWeek + ' ' + (nx.a === t ? '@ ' : 'vs ') + NICK[opp] + ' (' + (OWN[opp] ? (P.isMe(OWN[opp]) ? 'me' : OWN[opp]) : 'nobody') + ') · ' + nx.day; }
       return { abbr: t, nick: NICK[t], rec: P.fmtRec(rec[t]), games: log[t], pts: won,
         pace: pace.toFixed(1), vegas: VEGAS[t], diff: (d >= 0 ? '+' : '') + d.toFixed(1), diffColor: d >= 0 ? 'var(--up)' : 'var(--soft)',
         bye: BYE[t], hasNext: !!nx, next: next };
@@ -240,14 +193,14 @@ class Component extends DCLogic {
       return { name: c, pressed: on ? 'true' : 'false', pick: function () { self.setState({ sel: c }); },
         border: on ? 'var(--gold)' : 'var(--line)', bg: on ? 'var(--gold)' : 'var(--panel)', fg: on ? 'var(--ongold)' : 'var(--ink)' };
     });
-    var live = UP.length > 0;
+    var live = P.live(latest);
     return { modeClass: 'wwp-' + mode, toggleMode: function () { self.setState({ mode: mode === 'dark' ? 'light' : 'dark' }); },
       chips: chips, name: sel, summary: summary, place: place, pts: pts[sel], odds: sim.now.win[sel].toFixed(1) + '%',
       asOf: live ? 'Week ' + latest + ' in progress' : 'After Week ' + latest,
       oddsChange: (ch >= 0 ? '+' : '') + ch.toFixed(1) + (latest > 1 ? ' since Week ' + (latest - 1) : ' since preseason'),
       range: P.fmt(sim.now.p10[sel]) + '–' + P.fmt(sim.now.p90[sel]), sims: RUNS.toLocaleString('en-US'),
       teamsTitle: P.poss(sel) + ' ' + P.word(ROSTER[sel].length) + ' teams', teams: teams,
-      showRooting: rooting.length > 0, rootTitle: 'Week ' + latest + ' rooting guide', rooting: rooting, vs: vs,
+      showRooting: rooting.length > 0, rootTitle: 'Week ' + upWeek + ' rooting guide', rooting: rooting, vs: vs,
       selfNote: sg ? P.poss(sel) + ' own teams have played each other ' + (sg === 1 ? 'once' : sg === 2 ? 'twice' : sg + ' times') + ', a guaranteed point either way.' : P.poss(sel) + ' own teams haven’t played each other yet.' };
   }
 }

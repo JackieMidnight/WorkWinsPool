@@ -6,6 +6,7 @@ The website for the Work Wins Pool 2026 season.
 | --- | --- |
 | Home and every "This week" link: forwards to the latest week | `index.html` |
 | Any week's standings and results, live while games are being played | `week.html?w=1`, `?w=2`, … (no `w=` opens the latest) |
+| Week 4 write-up (phone / desktop) | `week4.html` / `week4-desktop.html` |
 | Season and archive | `season.html` |
 | Coach page, with title odds | `coaches.html` |
 | All 32 teams + pace vs Vegas | `teams.html` |
@@ -20,7 +21,8 @@ The website for the Work Wins Pool 2026 season.
 | --- | --- |
 | `league.js` | Everything about this pool: its name, the coaches and their teams, headlines. |
 | `nfl.js` | NFL facts only: scores, games still to play, Vegas totals (as on the league's roster sheet), byes, last season. |
-| `pool.js` | Works out owners, points and standings from the two files above. You shouldn't need to edit it. |
+| `pool.js` | Works out owners, points, standings and title odds from the two files above. You shouldn't need to edit it. |
+| `weekN.js` + `writeup.js` | A write-up's words, and the shared code that lays out its numbers. |
 
 **Changing the rosters:** each coach's teams are in `ROSTERS` in `league.js`. If the pick order is
 ever known, list it in `DRAFT` instead (`'Name TEAM'`, top pick first) and the Rosters page will show
@@ -34,9 +36,18 @@ put their name in `ME` and the site will say "me" and "My" for them.
 **Starting a new week:** add a `/` and the first results to `RESULTS` and list the rest of the week's
 games in `PENDING` under the new week number. The home page follows along by itself.
 
-**Headlines and write-ups:** each week gets an automatic headline. To write your own, add it to
-`HEADLINES` in `league.js`, e.g. `{ 5: 'Doug runs away with it' }`. To post a longer Tuesday write-up,
-save it as `weekN.html` / `weekN-desktop.html` and add N to `WRITEUPS`; the week links then open it.
+**Next week's schedule:** list it in `SCHEDULE` in `nfl.js` (day and time, away, home). The Coaches page uses it
+for the "Next" lines and the rooting guide, and the write-up uses it for the preview.
+
+**Headlines:** each week gets an automatic headline. To write your own, add it to `HEADLINES` in
+`league.js`, e.g. `{ 5: 'Doug runs away with it' }`.
+
+**Posting a Tuesday write-up:** copy `week4.js`, `week4.html` and `week4-desktop.html` to the new week's
+number. In the new `weekN.js`, change `week`, `posted` and the words (headline, summary, a note per coach,
+awards, preview cards). In the two new pages, change the `week4` in the title, the redirect and the
+`week4.js` script line. Then add N to `WRITEUPS` and its headline to `HEADLINES` in `league.js`.
+Standings, the ledger, the bye watch, the preview grid and the biggest-swing card are all worked out by
+`writeup.js` from the data, so the write-up's numbers always match the rest of the site.
 
 ## How the pages work
 
@@ -60,7 +71,7 @@ pick the branch and `/ (root)`, then save. The site appears at
 `https://<your-username>.github.io/WorkWinsPool/` a minute or two later.
 
 Browsers keep a copy of each file for about 10 minutes, so new scores can take that long to show up.
-Whenever you change `support.js` or `pool.js`, bump the `?v=` number on their `<script src="…?v=…">` lines in
+Whenever you change `support.js`, `pool.js` or `writeup.js`, bump the `?v=` number on their `<script src="…?v=…">` lines in
 every page so visitors get the new version along with the new pages.
 
 To preview locally: `python3 -m http.server` in this folder, then open http://localhost:8000.

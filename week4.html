@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+// Paint the right background before the page renders: the saved theme, else light on wide screens and dark on phones.
+try { document.documentElement.setAttribute('data-theme', localStorage.getItem('wwp-theme') || (window.matchMedia('(min-width: 1024px)').matches ? 'light' : 'dark')); } catch (e) {}
+</script>
+<title>Work Wins Pool, Week 4 write-up</title>
+<script>
+(function () {
+  var wide = window.matchMedia('(min-width: 1024px)');
+  var go = function () { if (wide.matches && !window.matchMedia('print').matches) location.replace('week4-desktop.html'); };
+  go();
+  if (wide.addEventListener) wide.addEventListener('change', go); else if (wide.addListener) wide.addListener(go);
+})();
+</script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Libre+Franklin:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:"Libre Franklin",system-ui,-apple-system,"Segoe UI",sans-serif;background:#0A1F14}
+a{color:#C9A24B}a:hover{color:#E2BE6A}
+.wwp-dark{--bg:#0A1F14;--panel:#102A1B;--panel2:#0D2518;--ink:#EFEDE0;--soft:#9DB5A4;--line:#1D4530;--gold:#C9A24B;--goldsoft:rgba(201,162,75,.16);--up:#9CCB55;--dn:#8A9C90;--track:#1B3A27;--chip:#163A26;--ongold:#0A1F14}
+.wwp-light{--bg:#EEF2EA;--panel:#FFFFFF;--panel2:#F6F8F3;--ink:#0C2418;--soft:#4A6353;--line:#C7D6C7;--gold:#8A6B1C;--goldsoft:rgba(138,107,28,.12);--up:#2E6A1E;--dn:#66786C;--track:#DBE3D9;--chip:#E3EADF;--ongold:#FFFFFF}
+html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{background:#0A1F14}
+</style>
+<script src="nfl.js?v=3" defer></script>
+<script src="league.js?v=3" defer></script>
+<script src="pool.js?v=3" defer></script>
+<script src="week4.js?v=1" defer></script>
+<script src="writeup.js?v=1" defer></script>
+<script src="support.js?v=3" defer></script>
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-template">
+<div class="{{modeClass}}" style="width: 100%; max-width: 480px; min-height: 100vh; margin: 0 auto; box-sizing: border-box; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; font-size: 16px; line-height: 1.5">
+
+<header style="display: flex; align-items: center; gap: 10px; height: 60px; padding: 0 16px; border-bottom: 1px solid var(--line)">
+<a href="index.html" style="display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink)">
+<svg width="26" height="31" viewBox="0 0 60 72" aria-hidden="true"><path d="M30 3 L56 11 V35 C56 52 45 62 30 69 C15 62 4 52 4 35 V11 Z" fill="#14452C" stroke="#C9A24B" stroke-width="4"></path><ellipse cx="30" cy="37" rx="13" ry="8" fill="#9A5530" transform="rotate(-28 30 37)"></ellipse><path d="M24 40.5 L36 33.5" stroke="#F4F1E4" stroke-width="2"></path></svg>
+<span style="font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-size: 21px; letter-spacing: .03em; line-height: 1">{{leagueUpper}}</span>
+</a>
+<button type="button" aria-label="Switch to light mode" style="margin-left: auto; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--soft); cursor: pointer">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+</button>
+</header>
+
+<nav aria-label="Site sections" style="display: flex; gap: 2px; overflow-x: auto; padding: 0 8px; border-bottom: 1px solid var(--line)">
+<a href="index.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">This week</a>
+<a href="season.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Season</a>
+<a href="coaches.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Coaches</a>
+<a href="teams.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Teams</a>
+<a href="rosters.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Rosters</a>
+<a href="rules.html" style="flex: none; display: flex; align-items: center; min-height: 46px; padding: 0 10px; font-size: 14px; font-weight: 600; color: var(--soft); text-decoration: none">Rules</a>
+</nav>
+
+<div role="group" aria-label="Pick a week" style="display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 10px 16px; border-bottom: 1px solid var(--line)">
+<span style="flex: none; font-size: 12.5px; font-weight: 700; color: var(--soft); margin-right: 2px">Week</span>
+<sc-for list="{{weekChips}}" as="w" hint-placeholder-count="6">
+<sc-if value="{{w.link}}" hint-placeholder-val="{{true}}"><a href="{{w.href}}" aria-current="{{w.current}}" style="flex: none; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px {{w.borderStyle}} {{w.border}}; border-radius: 6px; background: {{w.bg}}; color: {{w.fg}}; font-weight: {{w.weight}}; font-size: 15px; text-decoration: none">{{w.n}}</a></sc-if>
+<sc-if value="{{w.future}}" hint-placeholder-val="{{false}}"><span aria-disabled="true" style="flex: none; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px dashed var(--line); border-radius: 6px; color: var(--soft); font-size: 15px; opacity: .6">{{w.n}}</span></sc-if>
+</sc-for>
+<a href="season.html" style="flex: none; display: flex; align-items: center; min-height: 44px; padding: 0 6px 0 8px; font-size: 13.5px; font-weight: 700; color: var(--gold); text-decoration: none">All weeks</a>
+</div>
+
+<section aria-labelledby="wk-title" style="position: relative; overflow: hidden; background-color: #0A1F14; background-image: radial-gradient(ellipse at 6% -6%, rgba(255,248,214,.13), transparent 42%), radial-gradient(ellipse at 94% -6%, rgba(255,248,214,.13), transparent 42%), repeating-linear-gradient(90deg, rgba(239,237,224,.045) 0 1px, transparent 1px 39px); color: #EFEDE0; padding: 24px 16px 22px; border-bottom: 4px solid #C9A24B; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: flex-start; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px; flex-grow: 1; min-width: 0">
+<span style="font-size: 13.5px; font-weight: 700; color: #C9A24B; letter-spacing: .02em">{{kicker}}</span>
+<h1 id="wk-title" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 56px; line-height: .95; letter-spacing: .005em; text-wrap: balance">{{headline}}</h1>
+</div>
+<svg width="54" height="65" viewBox="0 0 60 72" aria-hidden="true" style="flex: none; margin-top: 4px"><path d="M30 3 L56 11 V35 C56 52 45 62 30 69 C15 62 4 52 4 35 V11 Z" fill="#14452C" stroke="#C9A24B" stroke-width="3"></path><path d="M30 9 L50 15 V35 C50 48 42 56 30 62 C18 56 10 48 10 35 V15 Z" fill="none" stroke="#9CCB55" stroke-opacity=".45" stroke-width="1"></path><ellipse cx="30" cy="35" rx="12" ry="7.5" fill="#9A5530" transform="rotate(-28 30 35)"></ellipse><path d="M24.5 38.5 L35.5 31.5" stroke="#F4F1E4" stroke-width="1.6"></path><path d="M27 34 L29 37.5 M29.5 32.6 L31.5 36 M32 31.2 L34 34.6" stroke="#F4F1E4" stroke-width="1.2"></path><rect x="18" y="49" width="24" height="9" rx="2" fill="#0A1F14" stroke="#C9A24B" stroke-width="1"></rect><text x="30" y="56.2" text-anchor="middle" font-family="Anton, Impact, sans-serif" font-size="7" fill="#EFEDE0" letter-spacing=".6">2026</text></svg>
+</div>
+<p style="margin: 0; font-size: 16.5px; line-height: 1.5; color: #C3D2C7; text-wrap: pretty">{{summary}}</p>
+
+<svg width="358" height="30" viewBox="0 0 358 40" preserveAspectRatio="none" aria-hidden="true" style="display: block; margin-bottom: -12px"><path d="M0 40 V30 H14 V22 H26 V30 H34 V16 H48 V26 H58 V12 H64 V5 H66 V12 H72 V28 H84 V20 H98 V30 H110 V14 H118 V4 H121 V14 H128 V26 H142 V18 H156 V30 H168 V22 H178 V8 H181 V1 H183 V8 H186 V22 H196 V28 H210 V16 H224 V26 H236 V10 H244 V26 H256 V20 H270 V30 H282 V18 H290 V12 H300 V24 H314 V28 H326 V20 H338 V30 H358 V40 Z" fill="#1D4530"></path></svg>
+<div role="group" aria-label="Standings after Week {{week}}" style="position: relative; background: #051109; border: 1px solid #1D4530; border-radius: 6px; padding: 4px 12px 2px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid #1D4530; font-size: 12.5px; color: #8FA898"><span style="font-weight: 700; color: #C9A24B">Standings after Week {{week}}</span><span>Final</span></div>
+<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr) 44px 48px 36px; gap: 8px; padding: 7px 0 3px; font-size: 11px; color: #8FA898"><span></span><span>Coach and teams</span><span style="text-align: right">Wk {{week}}</span><span style="text-align: right">Pts</span><span style="text-align: right">Move</span></div>
+<sc-for list="{{standings}}" as="r" hint-placeholder-count="8">
+<div style="display: grid; grid-template-columns: 30px minmax(0, 1fr) 44px 48px 36px; gap: 8px; align-items: center; height: 54px; border-top: 1px solid #12301F">
+<span style="font-family: Anton, Impact, sans-serif; font-size: 16px; color: #8FA898; text-align: right">{{r.rk}}</span>
+<span style="display: flex; flex-direction: column; min-width: 0"><b style="font-size: 16px; font-weight: 700; color: {{r.nameColor}}">{{r.name}}</b><small style="font-size: 11.5px; color: #8FA898; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{r.teams}}</small></span>
+<span style="font-size: 13px; color: #C3D2C7; text-align: right; font-variant-numeric: tabular-nums">{{r.wk}}</span>
+<span style="font-family: Anton, Impact, sans-serif; font-size: 32px; line-height: 1; text-align: right; color: {{r.ptsColor}}; font-variant-numeric: tabular-nums">{{r.pts}}</span>
+<span aria-label="{{r.mvLabel}}" style="font-size: 12px; font-weight: 700; text-align: right; white-space: nowrap; color: {{r.mvColor}}">{{r.mv}}</span>
+</div>
+</sc-for>
+</div>
+<p style="margin: 0; font-size: 12.5px; line-height: 1.45; color: #8FA898">Big number is total points. Arrows are places moved since Week {{prevWeek}}. Tied coaches share a rank.</p>
+<a href="rules.html" style="display: flex; align-items: center; gap: 6px; min-height: 44px; font-size: 14.5px; font-weight: 700; color: #C9A24B; text-decoration: none">First time here? How scoring works<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+</section>
+
+<section aria-label="Share" style="padding: 20px 16px 0">
+<div style="display: flex; gap: 14px; align-items: center; padding: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px">
+<div aria-hidden="true" style="flex: none; width: 64px; height: 85px; border-radius: 4px; background: #0A1F14; border: 2px solid #C9A24B; display: flex; flex-direction: column; gap: 4px; padding: 7px 6px">
+<div style="height: 6px; width: 34px; background: #C9A24B; border-radius: 1px"></div>
+<div style="height: 4px; background: #EFEDE0; opacity: .8; border-radius: 1px"></div>
+<div style="height: 4px; background: #EFEDE0; opacity: .55; border-radius: 1px"></div>
+<div style="height: 4px; background: #EFEDE0; opacity: .55; border-radius: 1px"></div>
+<div style="height: 4px; background: #EFEDE0; opacity: .55; border-radius: 1px"></div>
+<div style="height: 4px; background: #EFEDE0; opacity: .55; border-radius: 1px"></div>
+<div style="height: 4px; background: #EFEDE0; opacity: .55; border-radius: 1px"></div>
+<div style="height: 4px; background: #EFEDE0; opacity: .55; border-radius: 1px"></div>
+<div style="height: 4px; background: #EFEDE0; opacity: .55; border-radius: 1px"></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+<div style="display: flex; flex-direction: column"><b style="font-size: 15.5px">Standings for the group text</b><span style="font-size: 13.5px; color: var(--soft)">An image sized for a group text, plus a text version with the link.</span></div>
+<div style="display: flex; gap: 8px">
+<a href="share.html" style="display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; border-radius: 6px; background: var(--gold); color: var(--ongold); font-size: 14px; font-weight: 800; text-decoration: none">Save image</a>
+<button type="button" onClick="{{copyText}}" aria-live="polite" style="min-height: 44px; padding: 0 14px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel2); color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">{{copyLabel}}</button>
+</div>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="notes-h" style="padding: 38px 16px 0; display: flex; flex-direction: column">
+<h2 id="notes-h" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05">How everyone's week went</h2>
+<p style="margin: 6px 0 4px; font-size: 14.5px; color: var(--soft)">In standings order. The chip is each coach's record for the week.</p>
+
+<sc-for list="{{notes}}" as="n" hint-placeholder-count="8">
+<article style="display: flex; flex-direction: column; gap: 4px; padding: 14px 0; border-bottom: {{n.border}}">
+<div style="display: flex; align-items: center; gap: 8px"><b style="font-size: 16.5px">{{n.name}}</b><sc-if value="{{n.me}}" hint-placeholder-val="{{false}}"><span style="font-size: 12px; color: var(--soft)">(me)</span></sc-if><span style="font-size: 12px; font-weight: 800; padding: 2px 7px; border-radius: 4px; background: {{n.chipBg}}; color: {{n.chipFg}}">{{n.wk}}</span><span style="margin-left: auto; font-family: Anton, Impact, sans-serif; font-size: 20px; color: {{n.ptsColor}}">{{n.pts}}</span></div>
+<p style="margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--soft); text-wrap: pretty">{{n.text}}</p>
+</article>
+</sc-for>
+</section>
+
+<section aria-labelledby="ledger-h" style="padding: 34px 16px 0; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h2 id="ledger-h" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05">Head-to-head ledger</h2>
+<p style="margin: 0; font-size: 14.5px; color: var(--soft)">{{ledgerNote}}</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{ledger}}" as="g" hint-placeholder-count="16">
+<div style="background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px 8px; display: flex; flex-direction: column; gap: 1px; min-width: 0">
+<span style="font-size: 11px; color: var(--soft); margin-bottom: 2px">{{g.day}}</span>
+<div style="display: grid; grid-template-columns: 38px minmax(0, 1fr) 24px; gap: 4px; align-items: baseline; font-size: 13.5px"><b style="letter-spacing: .02em; color: {{g.aColor}}">{{g.a}}</b><span style="color: {{g.aColor}}; font-weight: {{g.aWeight}}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{g.ac}}</span><span style="font-family: Anton, Impact, sans-serif; font-size: 16px; text-align: right; color: {{g.aColor}}">{{g.as}}</span></div>
+<div style="display: grid; grid-template-columns: 38px minmax(0, 1fr) 24px; gap: 4px; align-items: baseline; font-size: 13.5px"><b style="letter-spacing: .02em; color: {{g.hColor}}">{{g.h}}</b><span style="color: {{g.hColor}}; font-weight: {{g.hWeight}}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{g.hc}}</span><span style="font-family: Anton, Impact, sans-serif; font-size: 16px; text-align: right; color: {{g.hColor}}">{{g.hs}}</span></div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section aria-labelledby="awards-h" style="padding: 34px 16px 0; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px">
+<h2 id="awards-h" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05">Weekly awards</h2>
+<span style="font-size: 12.5px; color: var(--soft)">Swipe for all {{nAwards}}</span>
+</div>
+<div style="display: flex; gap: 10px; overflow-x: auto; margin: 0 -16px; padding: 2px 16px 10px; scroll-snap-type: x mandatory">
+<sc-for list="{{awards}}" as="a" hint-placeholder-count="7">
+<article style="flex: 0 0 272px; scroll-snap-align: start; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 15px; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12.5px; font-weight: 700; color: var(--gold)">{{a.who}}</span>
+<h3 style="margin: 0; font-family: Anton, Impact, sans-serif; font-weight: 400; font-size: 22px; line-height: 1.1">{{a.title}}</h3>
+<p style="margin: 0; font-size: 14px; line-height: 1.45; color: var(--soft)">{{a.text}}</p>
+</article>
+</sc-for>
+</div>
+</section>
+
+<sc-if value="{{hasNext}}" hint-placeholder-val="{{true}}"><section aria-labelledby="next-h" style="padding: 30px 16px 0; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<h2 id="next-h" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05">{{nextTitle}}</h2>
+<p style="margin: 0; font-size: 14.5px; color: var(--soft)">{{nextSub}}</p>
+</div>
+<ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px">
+<sc-if value="{{hasSwing}}" hint-placeholder-val="{{true}}"><li style="display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; background: var(--goldsoft); border-radius: 6px">
+<span style="font-size: 12px; font-weight: 800; color: var(--gold); letter-spacing: .03em">BIGGEST SWING</span>
+<span style="font-size: 14.5px; line-height: 1.45">{{swing}}</span>
+</li></sc-if>
+<sc-for list="{{preview}}" as="p" hint-placeholder-count="2">
+<li style="display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px">
+<span style="font-size: 12px; font-weight: 800; color: var(--gold); letter-spacing: .03em">{{p.label}}</span>
+<span style="font-size: 14.5px; line-height: 1.45">{{p.text}}</span>
+</li>
+</sc-for>
+</ol>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{next}}" as="g" hint-placeholder-count="15">
+<div style="background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px 8px; display: flex; flex-direction: column; gap: 1px; min-width: 0">
+<span style="font-size: 11px; color: var(--soft); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{g.day}}</span>
+<div style="display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 4px; align-items: baseline; font-size: 13.5px"><b style="letter-spacing: .02em; white-space: nowrap">{{g.a}}</b><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{g.ac}}</span><span style="font-size: 12px; color: var(--soft)">{{g.ar}}</span></div>
+<div style="display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 4px; align-items: baseline; font-size: 13.5px"><b style="letter-spacing: .02em; white-space: nowrap">{{g.h}}</b><span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{g.hc}}</span><span style="font-size: 12px; color: var(--soft)">{{g.hr}}</span></div>
+</div>
+</sc-for>
+</div>
+</section></sc-if>
+
+<section aria-labelledby="bye-h" style="padding: 34px 16px 0; display: flex; flex-direction: column; gap: 10px">
+<h2 id="bye-h" style="margin: 0; font-family: Anton, Impact, 'Arial Narrow', sans-serif; font-weight: 400; font-size: 30px; line-height: 1.05">Bye watch</h2>
+<p style="margin: 0; font-size: 15px">{{byeIntro}}</p>
+<div style="display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 6px; background: var(--panel)">
+<sc-for list="{{byes}}" as="b" hint-placeholder-count="2">
+<div style="display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: start; padding: 12px 14px; border-bottom: {{b.border}}">
+<span style="font-size: 13px; font-weight: 800; color: var(--soft); padding-top: 3px">Week {{b.wk}}</span>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{b.teams}}" as="t" hint-placeholder-count="2"><span style="font-size: 13px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 4px"><b>{{t.abbr}}</b> {{t.owner}}</span></sc-for></div>
+<span style="font-size: 13.5px; color: var(--soft)">{{b.note}}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<a href="rosters.html" style="display: flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 700; text-decoration: none">Full bye map for the season</a>
+</section>
+
+<footer style="margin-top: auto; padding: 40px 16px 44px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; border-top: 1px solid var(--line)">
+<span style="font-size: 12.5px; color: var(--soft)">{{commissioner}} Scores from NFL.com and FootballDB.</span>
+<span style="font-size: 11.5px; font-weight: 700; letter-spacing: .08em; color: var(--up)">{{tagline}}</span>
+</footer>
+</div>
+</template>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Theme"},"$preview":{"width":390,"height":4800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    // The words are in week4.js; writeup.js works out the rest.
+    return window.writeupVals(this);
+  }
+}
+</script>
+</body>
+</html>
