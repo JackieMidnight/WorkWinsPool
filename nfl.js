@@ -20,12 +20,18 @@ window.NFL = {
     '/PIT CLE 24 27,IND WAS 30 13,NE BUF 29 26,ARI NYG 24 36,NYJ CHI 12 23,TEN BAL 18 24,GB TB 17 14,DAL HOU 34 30,JAX CIN 22 17,LAR PHI 24 20,MIA MIN 10 15,DEN SF 14 24,LAC SEA 23 30,KC LV 30 27,DET CAR 26 32,ATL NO 45 24' +
     '/TB DAL 24 16,PHI JAX 17 19,CHI GB 7 31,HOU TEN 26 3,CIN MIA 31 24,LV NE 17 45,MIN NO 23 13,CLE NYJ 12 17,IND PIT 22 34,NYG WAS 27 27,DEN LAC 23 17,DET ARI 45 21,SF SEA 32 29,BAL ATL 30 23,BUF LAR 37 34' +
     '/SEA DEN 14 17,HOU JAX 34 31,CHI ATL 31 23,BAL CLE 10 13,TEN IND 26 20,NYJ NE 19 26,NO NYG 34 27,CAR PHI 25 14,PIT TB 26 19,ARI LAR 18 16,LAC KC 6 22,BUF LV 33 30,DAL GB 13 23,WAS SF 17 23' +
-    '/NE CHI 24 30,PIT NO 16 10,SF ATL 20 29,CLE TEN 27 24,IND MIN 10 16,MIA NYJ 28 25,TB CAR 43 13,CIN BAL 35 13,NYG HOU 27 21,DEN ARI 30 16,GB DET 17 20,LAR LV 35 21,KC SEA 3 20,DAL PHI 38 21',
+    '/NE CHI 24 30,PIT NO 16 10,SF ATL 20 29,CLE TEN 27 24,IND MIN 10 16,MIA NYJ 28 25,TB CAR 43 13,CIN BAL 35 13,NYG HOU 27 21,DEN ARI 30 16,GB DET 17 20,LAR LV 35 21,KC SEA 3 20,DAL PHI 38 21' +
+    '/CAR GB 19 27',
 
   // Games of an in-progress week that haven't finished: [day and time, away, home].
   // When the week is over, add its last games to RESULTS and empty its PENDING entry.
-  // Week 7 is complete: all 14 games are in RESULTS. Week 8 has not started, so its games live in SCHEDULE until the first result is in.
-  PENDING: {},
+  // Week 8: CAR GB is final; the other 13 games are still to play.
+  PENDING: {
+    8: [['Sun 1:00', 'BAL', 'BUF'], ['Sun 1:00', 'TEN', 'CIN'], ['Sun 1:00', 'ARI', 'DAL'], ['Sun 1:00', 'MIN', 'DET'],
+      ['Sun 1:00', 'LV', 'NYJ'], ['Sun 1:00', 'CLE', 'PIT'], ['Sun 1:00', 'ATL', 'TB'], ['Sun 1:00', 'IND', 'JAX'],
+      ['Sun 4:05', 'LAC', 'LAR'], ['Sun 4:25', 'KC', 'DEN'], ['Sun 4:25', 'NE', 'MIA'], ['Sun 8:20', 'PHI', 'WAS'],
+      ['Mon 8:15', 'CHI', 'SEA']]
+  },
 
   // Each week's games: [day and time ET, away, home]. Next week's feeds the previews and the rooting guide;
   // past weeks' give the write-ups their game days.
