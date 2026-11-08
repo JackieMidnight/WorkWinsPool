@@ -22,13 +22,13 @@ window.NFL = {
     '/SEA DEN 14 17,HOU JAX 34 31,CHI ATL 31 23,BAL CLE 10 13,TEN IND 26 20,NYJ NE 19 26,NO NYG 34 27,CAR PHI 25 14,PIT TB 26 19,ARI LAR 18 16,LAC KC 6 22,BUF LV 33 30,DAL GB 13 23,WAS SF 17 23' +
     '/NE CHI 24 30,PIT NO 16 10,SF ATL 20 29,CLE TEN 27 24,IND MIN 10 16,MIA NYJ 28 25,TB CAR 43 13,CIN BAL 35 13,NYG HOU 27 21,DEN ARI 30 16,GB DET 17 20,LAR LV 35 21,KC SEA 3 20,DAL PHI 38 21' +
     '/CAR GB 19 27,BAL BUF 10 36,TEN CIN 36 43,ARI DAL 33 30,MIN DET 15 19,LV NYJ 38 33,CLE PIT 6 27,ATL TB 0 16,IND JAX 7 42,LAC LAR 9 24,KC DEN 24 28,NE MIA 24 19,PHI WAS 10 27,CHI SEA 34 17' +
-    '/JAX BAL 33 10',
+    '/JAX BAL 33 10,CIN ATL 34 17',
 
   // Games of an in-progress week that haven't finished: [day and time, away, home].
   // When the week is over, add its last games to RESULTS and empty its PENDING entry.
-  // Week 9: JAX BAL is final; the other 14 games are still to play.
+  // Week 9: JAX BAL and CIN ATL are final; the other 13 games are still to play.
   PENDING: {
-    9: [['Sun 9:30 a.m. · Madrid', 'CIN', 'ATL'], ['Sun 1:00', 'DAL', 'IND'], ['Sun 1:00', 'NYJ', 'KC'],
+    9: [['Sun 1:00', 'DAL', 'IND'], ['Sun 1:00', 'NYJ', 'KC'],
       ['Sun 1:00', 'DET', 'MIA'], ['Sun 1:00', 'CLE', 'NO'], ['Sun 1:00', 'NYG', 'PHI'], ['Sun 1:00', 'LAR', 'WAS'],
       ['Sun 1:00', 'DEN', 'CAR'], ['Sun 4:05', 'HOU', 'LAC'], ['Sun 4:25', 'GB', 'NE'], ['Sun 4:25', 'LV', 'SF'],
       ['Sun 4:25', 'ARI', 'SEA'], ['Sun 8:20', 'TB', 'CHI'], ['Mon 8:15', 'BUF', 'MIN']]
