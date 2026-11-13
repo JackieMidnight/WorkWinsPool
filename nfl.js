@@ -22,12 +22,18 @@ window.NFL = {
     '/SEA DEN 14 17,HOU JAX 34 31,CHI ATL 31 23,BAL CLE 10 13,TEN IND 26 20,NYJ NE 19 26,NO NYG 34 27,CAR PHI 25 14,PIT TB 26 19,ARI LAR 18 16,LAC KC 6 22,BUF LV 33 30,DAL GB 13 23,WAS SF 17 23' +
     '/NE CHI 24 30,PIT NO 16 10,SF ATL 20 29,CLE TEN 27 24,IND MIN 10 16,MIA NYJ 28 25,TB CAR 43 13,CIN BAL 35 13,NYG HOU 27 21,DEN ARI 30 16,GB DET 17 20,LAR LV 35 21,KC SEA 3 20,DAL PHI 38 21' +
     '/CAR GB 19 27,BAL BUF 10 36,TEN CIN 36 43,ARI DAL 33 30,MIN DET 15 19,LV NYJ 38 33,CLE PIT 6 27,ATL TB 0 16,IND JAX 7 42,LAC LAR 9 24,KC DEN 24 28,NE MIA 24 19,PHI WAS 10 27,CHI SEA 34 17' +
-    '/JAX BAL 33 10,CIN ATL 34 17,DAL IND 27 23,NYJ KC 12 35,DET MIA 19 9,CLE NO 22 23,NYG PHI 19 11,LAR WAS 20 13,DEN CAR 26 21,HOU LAC 44 22,GB NE 45 27,LV SF 17 38,ARI SEA 3 17,TB CHI 24 27,BUF MIN 23 6',
+    '/JAX BAL 33 10,CIN ATL 34 17,DAL IND 27 23,NYJ KC 12 35,DET MIA 19 9,CLE NO 22 23,NYG PHI 19 11,LAR WAS 20 13,DEN CAR 26 21,HOU LAC 44 22,GB NE 45 27,LV SF 17 38,ARI SEA 3 17,TB CHI 24 27,BUF MIN 23 6' +
+    '/WAS NYG 24 21',
 
   // Games of an in-progress week that haven't finished: [day and time, away, home].
   // When the week is over, add its last games to RESULTS and empty its PENDING entry.
-  // Week 9 is complete: all 15 games are in RESULTS. Week 10 has not started, so its games live in SCHEDULE until the first result is in.
-  PENDING: {},
+  // Week 10: WAS NYG is final; the other 13 games are still to play.
+  PENDING: {
+    10: [['Sun 9:30 a.m. · Munich', 'NE', 'DET'], ['Sun 1:00', 'KC', 'ATL'], ['Sun 1:00', 'HOU', 'CLE'],
+      ['Sun 1:00', 'MIN', 'GB'], ['Sun 1:00', 'JAX', 'TEN'], ['Sun 1:00', 'MIA', 'IND'], ['Sun 1:00', 'CAR', 'NO'],
+      ['Sun 1:00', 'BUF', 'NYJ'], ['Sun 4:05', 'SEA', 'LV'], ['Sun 4:05', 'LAR', 'ARI'], ['Sun 4:25', 'SF', 'DAL'],
+      ['Sun 8:20', 'PIT', 'CIN'], ['Mon 8:15', 'LAC', 'BAL']]
+  },
 
   // Each week's games: [day and time ET, away, home]. Next week's feeds the previews and the rooting guide;
   // past weeks' give the write-ups their game days.
