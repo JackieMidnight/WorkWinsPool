@@ -23,14 +23,12 @@ window.NFL = {
     '/NE CHI 24 30,PIT NO 16 10,SF ATL 20 29,CLE TEN 27 24,IND MIN 10 16,MIA NYJ 28 25,TB CAR 43 13,CIN BAL 35 13,NYG HOU 27 21,DEN ARI 30 16,GB DET 17 20,LAR LV 35 21,KC SEA 3 20,DAL PHI 38 21' +
     '/CAR GB 19 27,BAL BUF 10 36,TEN CIN 36 43,ARI DAL 33 30,MIN DET 15 19,LV NYJ 38 33,CLE PIT 6 27,ATL TB 0 16,IND JAX 7 42,LAC LAR 9 24,KC DEN 24 28,NE MIA 24 19,PHI WAS 10 27,CHI SEA 34 17' +
     '/JAX BAL 33 10,CIN ATL 34 17,DAL IND 27 23,NYJ KC 12 35,DET MIA 19 9,CLE NO 22 23,NYG PHI 19 11,LAR WAS 20 13,DEN CAR 26 21,HOU LAC 44 22,GB NE 45 27,LV SF 17 38,ARI SEA 3 17,TB CHI 24 27,BUF MIN 23 6' +
-    '/WAS NYG 24 21,NE DET 10 35,KC ATL 35 13,HOU CLE 24 27,MIN GB 30 10,JAX TEN 40 23,MIA IND 22 24,CAR NO 20 17,BUF NYJ 31 12,SEA LV 21 13,LAR ARI 34 6,SF DAL 46 40,PIT CIN 18 38',
+    '/WAS NYG 24 21,NE DET 10 35,KC ATL 35 13,HOU CLE 24 27,MIN GB 30 10,JAX TEN 40 23,MIA IND 22 24,CAR NO 20 17,BUF NYJ 31 12,SEA LV 21 13,LAR ARI 34 6,SF DAL 46 40,PIT CIN 18 38,LAC BAL 23 20',
 
   // Games of an in-progress week that haven't finished: [day and time, away, home].
   // When the week is over, add its last games to RESULTS and empty its PENDING entry.
-  // Week 10: the remaining 1 game is still to play and the others are final.
-  PENDING: {
-    10: [['Mon 8:15', 'LAC', 'BAL']]
-  },
+  // Week 10 is complete: all 14 games are in RESULTS. Week 11 has not started, so its games live in SCHEDULE until the first result is in.
+  PENDING: {},
 
   // Each week's games: [day and time ET, away, home]. Next week's feeds the previews and the rooting guide;
   // past weeks' give the write-ups their game days.
@@ -63,7 +61,11 @@ window.NFL = {
     10: [['Thu 8:15', 'WAS', 'NYG'], ['Sun 9:30 a.m. · Munich', 'NE', 'DET'], ['Sun 1:00', 'KC', 'ATL'], ['Sun 1:00', 'HOU', 'CLE'],
       ['Sun 1:00', 'MIN', 'GB'], ['Sun 1:00', 'JAX', 'TEN'], ['Sun 1:00', 'MIA', 'IND'], ['Sun 1:00', 'CAR', 'NO'],
       ['Sun 1:00', 'BUF', 'NYJ'], ['Sun 4:05', 'SEA', 'LV'], ['Sun 4:05', 'LAR', 'ARI'], ['Sun 4:25', 'SF', 'DAL'],
-      ['Sun 8:20', 'PIT', 'CIN'], ['Mon 8:15', 'LAC', 'BAL']]
+      ['Sun 8:20', 'PIT', 'CIN'], ['Mon 8:15', 'LAC', 'BAL']],
+    11: [['Thu 8:15', 'IND', 'HOU'], ['Sun 1:00', 'MIA', 'BUF'], ['Sun 1:00', 'NO', 'CHI'], ['Sun 1:00', 'TEN', 'DAL'],
+      ['Sun 1:00', 'TB', 'DET'], ['Sun 1:00', 'ARI', 'KC'], ['Sun 1:00', 'PIT', 'PHI'], ['Sun 1:00', 'BAL', 'CAR'],
+      ['Sun 4:05', 'NYJ', 'LAC'], ['Sun 4:25', 'LV', 'DEN'], ['Sun 4:25', 'JAX', 'NYG'], ['Sun 8:20 · Mexico City', 'MIN', 'SF'],
+      ['Mon 8:15', 'CIN', 'WAS']]
   },
 
   NICK: { ARI: 'Cardinals', ATL: 'Falcons', BAL: 'Ravens', BUF: 'Bills', CAR: 'Panthers', CHI: 'Bears', CIN: 'Bengals', CLE: 'Browns', DAL: 'Cowboys', DEN: 'Broncos', DET: 'Lions', GB: 'Packers', HOU: 'Texans', IND: 'Colts', JAX: 'Jaguars', KC: 'Chiefs', LAC: 'Chargers', LAR: 'Rams', LV: 'Raiders', MIA: 'Dolphins', MIN: 'Vikings', NE: 'Patriots', NO: 'Saints', NYG: 'Giants', NYJ: 'Jets', PHI: 'Eagles', PIT: 'Steelers', SEA: 'Seahawks', SF: '49ers', TB: 'Buccaneers', TEN: 'Titans', WAS: 'Commanders' },
