@@ -24,14 +24,13 @@ window.NFL = {
     '/CAR GB 19 27,BAL BUF 10 36,TEN CIN 36 43,ARI DAL 33 30,MIN DET 15 19,LV NYJ 38 33,CLE PIT 6 27,ATL TB 0 16,IND JAX 7 42,LAC LAR 9 24,KC DEN 24 28,NE MIA 24 19,PHI WAS 10 27,CHI SEA 34 17' +
     '/JAX BAL 33 10,CIN ATL 34 17,DAL IND 27 23,NYJ KC 12 35,DET MIA 19 9,CLE NO 22 23,NYG PHI 19 11,LAR WAS 20 13,DEN CAR 26 21,HOU LAC 44 22,GB NE 45 27,LV SF 17 38,ARI SEA 3 17,TB CHI 24 27,BUF MIN 23 6' +
     '/WAS NYG 24 21,NE DET 10 35,KC ATL 35 13,HOU CLE 24 27,MIN GB 30 10,JAX TEN 40 23,MIA IND 22 24,CAR NO 20 17,BUF NYJ 31 12,SEA LV 21 13,LAR ARI 34 6,SF DAL 46 40,PIT CIN 18 38,LAC BAL 23 20' +
-    '/IND HOU 3 26,MIA BUF 9 26,NO CHI 13 21,TEN DAL 30 51,TB DET 21 31,ARI KC 7 34,PIT PHI 16 19,BAL CAR 33 35,NYJ LAC 27 24,LV DEN 24 38,JAX NYG 18 23',
+    '/IND HOU 3 26,MIA BUF 9 26,NO CHI 13 21,TEN DAL 30 51,TB DET 21 31,ARI KC 7 34,PIT PHI 16 19,BAL CAR 33 35,NYJ LAC 27 24,LV DEN 24 38,JAX NYG 18 23,MIN SF 10 35',
 
   // Games of an in-progress week that haven't finished: [day and time, away, home].
   // When the week is over, add its last games to RESULTS and empty its PENDING entry.
-  // Week 11 is in progress and its remaining games are listed in PENDING.
+  // Week 11 is in progress and only CIN at WAS (Monday) remains.
   PENDING: {
-    11: [['Sun 8:20 · Mexico City', 'MIN', 'SF'],
-      ['Mon 8:15', 'CIN', 'WAS']]
+    11: [['Mon 8:15', 'CIN', 'WAS']]
   },
 
   // Each week's games: [day and time ET, away, home]. Next week's feeds the previews and the rooting guide;
