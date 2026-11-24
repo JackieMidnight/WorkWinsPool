@@ -12,18 +12,18 @@ window.writeupVals = function (comp) {
   var who = function (t) { return OWN[t] ? (P.isMe(OWN[t]) ? 'me' : OWN[t]) : 'nobody'; };
 
   var t = P.table(wk), prev = wk > 1 ? P.table(wk - 1).rank : null;
-  var standings = t.order.map(function (c, i) {
+  var standings = t.order.map(function (c) {
     var mv = prev ? prev[c] - t.rank[c] : 0;
     return {
       rk: t.label(c), name: c, teams: P.roster[c].join(' '), wk: P.fmtRec(t.rec[c]), pts: t.pts[c],
-      nameColor: i === 0 ? '#C9A24B' : '#EFEDE0', ptsColor: i === 0 ? '#C9A24B' : '#EFEDE0',
+      nameColor: t.rank[c] === 1 ? '#C9A24B' : '#EFEDE0', ptsColor: t.rank[c] === 1 ? '#C9A24B' : '#EFEDE0',
       mv: !prev ? '' : mv > 0 ? '▲' + mv : mv < 0 ? '▼' + (-mv) : '–', mvColor: mv > 0 ? '#9CCB55' : '#8FA898',
       mvLabel: !prev ? 'first week' : mv > 0 ? 'up ' + mv : mv < 0 ? 'down ' + (-mv) : 'no change'
     };
   });
   var notes = t.order.map(function (c, i) {
     return { name: c, me: P.isMe(c), nameMe: P.isMe(c) ? c + ' (me)' : c, wk: P.fmtRec(t.rec[c]), pts: t.pts[c] + ' pts', text: W.notes[c] || '',
-      chipBg: i === 0 ? 'var(--gold)' : 'var(--chip)', chipFg: i === 0 ? 'var(--ongold)' : 'var(--ink)', ptsColor: i === 0 ? 'var(--gold)' : 'var(--ink)',
+      chipBg: t.rank[c] === 1 ? 'var(--gold)' : 'var(--chip)', chipFg: t.rank[c] === 1 ? 'var(--ongold)' : 'var(--ink)', ptsColor: t.rank[c] === 1 ? 'var(--gold)' : 'var(--ink)',
       border: i === t.order.length - 1 ? '0' : '1px solid var(--line)' };
   });
 

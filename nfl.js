@@ -9,7 +9,7 @@
  * rest of that week's games in PENDING under the new week number.
  */
 window.NFL = {
-  SEASON_START: '2026-09-10', // Thursday of Week 1, used for the "Games Sep 10–14" dates
+  SEASON_START: '2026-09-10', // Thursday of Week 1. Week date ranges are measured from this anchor.
   SEASON_WEEKS: 18,
   GAMES: 17,
 
@@ -35,7 +35,11 @@ window.NFL = {
   // past weeks' give the write-ups their game days.
   // London and other neutral-site games list the designated home team second.
   SCHEDULE: {
-    4: [['Thu 8:15', 'PIT', 'CLE'], ['Sun 9:30 a.m.', 'IND', 'WAS'], ['Sun 1:00', 'DAL', 'HOU'], ['Sun 1:00', 'NYJ', 'CHI'],
+    1: [['Wed 8:20', 'NE', 'SEA'], ['Thu 8:35 · Melbourne', 'SF', 'LAR'], ['Sun 1:00', 'TB', 'CIN'], ['Sun 1:00', 'NO', 'DET'],
+      ['Sun 1:00', 'NYJ', 'TEN'], ['Sun 1:00', 'BAL', 'IND'], ['Sun 1:00', 'ATL', 'PIT'], ['Sun 1:00', 'CHI', 'CAR'],
+      ['Sun 1:00', 'CLE', 'JAX'], ['Sun 1:00', 'BUF', 'HOU'], ['Sun 4:25', 'MIA', 'LV'], ['Sun 4:25', 'GB', 'MIN'],
+      ['Sun 4:25', 'WAS', 'PHI'], ['Sun 4:25', 'ARI', 'LAC'], ['Sun 8:20', 'DAL', 'NYG'], ['Mon 8:15', 'DEN', 'KC']],
+    4: [['Thu 8:15', 'PIT', 'CLE'], ['Sun 9:30 a.m. · London', 'IND', 'WAS'], ['Sun 1:00', 'DAL', 'HOU'], ['Sun 1:00', 'NYJ', 'CHI'],
       ['Sun 1:00', 'JAX', 'CIN'], ['Sun 1:00', 'TEN', 'BAL'], ['Sun 1:00', 'ARI', 'NYG'], ['Sun 1:00', 'LAR', 'PHI'],
       ['Sun 1:00', 'GB', 'TB'], ['Sun 1:00', 'NE', 'BUF'], ['Sun 4:05', 'MIA', 'MIN'], ['Sun 4:25', 'DEN', 'SF'],
       ['Sun 4:25', 'LAC', 'SEA'], ['Sun 4:25', 'KC', 'LV'], ['Sun 8:20', 'DET', 'CAR'], ['Mon 8:15', 'ATL', 'NO']],
