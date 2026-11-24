@@ -17,9 +17,9 @@ a{color:#C9A24B}a:hover{color:#E2BE6A}
 .wwp-light{--bg:#EEF2EA;--panel:#FFFFFF;--panel2:#F6F8F3;--ink:#0C2418;--soft:#4A6353;--line:#C7D6C7;--gold:#8A6B1C;--goldsoft:rgba(138,107,28,.12);--up:#2E6A1E;--dn:#66786C;--track:#DBE3D9;--chip:#E3EADF;--ongold:#FFFFFF}
 html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{background:#0A1F14}
 </style>
-<script src="nfl.js?v=3" defer></script>
+<script src="nfl.js?v=4" defer></script>
 <script src="league.js?v=3" defer></script>
-<script src="pool.js?v=3" defer></script>
+<script src="pool.js?v=4" defer></script>
 <script src="support.js?v=3" defer></script>
 </head>
 <body>
@@ -125,9 +125,14 @@ class Component extends DCLogic {
     });
     var unbeaten = teams.filter(function (x) { return gp[x.t] && rec[x.t][1] === 0 && rec[x.t][2] === 0; }).map(function (x) { return x.t; }).sort();
     var winless = teams.filter(function (x) { return gp[x.t] && rec[x.t][0] === 0 && rec[x.t][2] === 0; }).map(function (x) { return x.t; }).sort();
-    var count = function (xs, one, many) { return P.word(xs.length) + ' ' + (xs.length === 1 ? one : many) + (xs.length ? ' (' + xs.join(', ') + ')' : ''); };
+    var teamPhrase = function (xs, adj) {
+      var names = xs.length ? ' (' + xs.join(', ') + ')' : '';
+      return xs.length === 1 ? 'one team is ' + adj + names : P.word(xs.length) + ' teams are ' + adj + names;
+    };
     var summary = only === 'All'
-      ? P.cap(count(unbeaten, 'team is unbeaten', 'teams are unbeaten')) + ' and ' + count(winless, 'is winless', 'are winless') + '.'
+      ? (unbeaten.length || winless.length
+          ? P.cap(teamPhrase(unbeaten, 'unbeaten')) + ' and ' + teamPhrase(winless, 'winless') + '.'
+          : 'No teams are unbeaten or winless.')
       : P.poss(only) + ' ' + P.word(list.length) + ' teams have ' + list.reduce(function (s, x) { return s + x.pts; }, 0) + ' points combined.';
     var played = Math.max.apply(null, P.teams.map(function (t) { return gp[t]; }));
     var sorts = [['pace', 'Pace vs Vegas'], ['points', 'Points'], ['coach', 'By coach']].map(function (s) {

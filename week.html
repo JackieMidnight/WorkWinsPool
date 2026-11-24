@@ -17,9 +17,9 @@ a{color:#C9A24B}a:hover{color:#E2BE6A}
 .wwp-light{--bg:#EEF2EA;--panel:#FFFFFF;--panel2:#F6F8F3;--ink:#0C2418;--soft:#4A6353;--line:#C7D6C7;--gold:#8A6B1C;--goldsoft:rgba(138,107,28,.12);--up:#2E6A1E;--dn:#66786C;--track:#DBE3D9;--chip:#E3EADF;--ongold:#FFFFFF}
 html[data-theme=light] body{background:#EEF2EA}html[data-theme=dark] body{background:#0A1F14}
 </style>
-<script src="nfl.js?v=3" defer></script>
+<script src="nfl.js?v=4" defer></script>
 <script src="league.js?v=3" defer></script>
-<script src="pool.js?v=3" defer></script>
+<script src="pool.js?v=4" defer></script>
 <script src="support.js?v=3" defer></script>
 </head>
 <body>
@@ -161,7 +161,7 @@ class Component extends DCLogic {
   renderVals() {
     var mode = this.props.mode ?? 'dark';
     var P = window.POOL, N = window.NFL;
-    var C = P.coaches, OWN = P.own, weeks = P.weeks, latest = P.latest;
+    var OWN = P.own, weeks = P.weeks, latest = P.latest;
     var SEASON_WEEKS = N.SEASON_WEEKS, SHOWN_WEEKS = 6;
     // No w= in the address opens the latest week, so the home page never needs changing.
     var m = /[?&]w=(\d+)/.exec(location.search);
@@ -185,13 +185,10 @@ class Component extends DCLogic {
 
     var list = P.list;
     var leaders = order.filter(function (c) { return rank[c] === 1; });
-    var wkPts = function (c) { return rec[c][0] + rec[c][2] / 2; };
-    var best = Math.max.apply(null, C.map(wkPts));
-    var bestCoaches = order.filter(function (c) { return wkPts(c) === best; });
     var gamesLeft = pending.length === 1 ? '1 game' : pending.length + ' games';
     var summary = list(leaders) + (leaders.length > 1 ? ' share first' : ' leads') + ' with ' + pts[leaders[0]] + ' points' +
       (live ? ', and ' + gamesLeft + (pending.length === 1 ? ' is' : ' are') + ' still to play this week. Best week so far: ' : ' after Week ' + wk + '. Best week: ') +
-      list(bestCoaches) + ' at ' + P.fmtRec(rec[bestCoaches[0]]) + '.';
+      P.bestWeeks(wk) + '.';
 
     var ledger = weeks[wk - 1].map(function (g) {
       var tie = g.as === g.hs, aw = g.as > g.hs;

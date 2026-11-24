@@ -58,6 +58,32 @@
 
   var list = function (xs) { return xs.length <= 1 ? (xs[0] || '') : xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1]; };
   var fmtRec = function (r) { return r[0] + '-' + r[1] + (r[2] ? '-' + r[2] : ''); };
+  // Best single week through week k: every coach-week at the max (a win is 1, a tie is 0.5), each with its own record.
+  var bestWeeks = function (k) {
+    var best = -1, hits = [];
+    weeks.slice(0, k).forEach(function (games, wi) {
+      var rec = {};
+      coaches.forEach(function (c) { rec[c] = [0, 0, 0]; });
+      games.forEach(function (g) {
+        var oa = own[g.a], oh = own[g.h];
+        if (g.as === g.hs) {
+          if (oa) rec[oa][2]++;
+          if (oh) rec[oh][2]++;
+        } else {
+          var win = g.as > g.hs ? oa : oh, lose = g.as > g.hs ? oh : oa;
+          if (win) rec[win][0]++;
+          if (lose) rec[lose][1]++;
+        }
+      });
+      coaches.forEach(function (c) {
+        var pts = rec[c][0] + rec[c][2] / 2;
+        if (pts > best) { best = pts; hits = []; }
+        if (pts === best) hits.push({ c: c, w: wi + 1, rec: rec[c].slice() });
+      });
+    });
+    hits.sort(function (a, b) { return a.w - b.w || a.c.localeCompare(b.c); });
+    return hits.map(function (h) { return h.c + ' ' + fmtRec(h.rec) + ' (Week ' + h.w + ')'; }).join(', ');
+  };
   var fmt = function (x) { return (Math.round(x * 10) / 10).toString(); };
   var ord = function (n) { var s = n % 100; return n + (s > 10 && s < 14 ? 'th' : n % 10 === 1 ? 'st' : n % 10 === 2 ? 'nd' : n % 10 === 3 ? 'rd' : 'th'); };
   var isMe = function (c) { return !!L.ME && c === L.ME; };
@@ -70,10 +96,21 @@
   var tagline = L.TAGLINE || (word(perCoach).toUpperCase() + ' TEAMS. ONE GOAL. BRAGGING RIGHTS FOR A YEAR.');
 
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  // Thursday to Monday of week n, e.g. "Sep 10–14" or "Sep 30–Oct 4"
+  // SCHEDULE day names sit relative to Thursday of that week (SEASON_START). Wednesday is the day before.
+  var DAY_OFF = { Wed: -1, Thu: 0, Fri: 1, Sat: 2, Sun: 3, Mon: 4 };
   var weekDates = function (n) {
     var p = N.SEASON_START.split('-');
-    var start = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + (n - 1) * 7)), end = new Date(start.getTime() + 4 * 864e5);
+    var thu = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + (n - 1) * 7));
+    var games = (N.SCHEDULE && N.SCHEDULE[n]) || [];
+    var offs = [];
+    games.forEach(function (g) {
+      var d = DAY_OFF[String(g[0]).slice(0, 3)];
+      if (typeof d === 'number') offs.push(d);
+    });
+    // No schedule: Thursday through Monday. Weeks 1 and 12 open on Wednesday.
+    var first = offs.length ? Math.min.apply(null, offs) : (n === 1 || n === 12 ? -1 : 0);
+    var last = offs.length ? Math.max.apply(null, offs) : 4;
+    var start = new Date(thu.getTime() + first * 864e5), end = new Date(thu.getTime() + last * 864e5);
     var m1 = MONTHS[start.getUTCMonth()], m2 = MONTHS[end.getUTCMonth()];
     return m1 + ' ' + start.getUTCDate() + '–' + (m1 === m2 ? '' : m2 + ' ') + end.getUTCDate();
   };
@@ -155,7 +192,7 @@
     // the latest week whose games are all final
     lastFinal: pending(latest).length ? latest - 1 : latest,
     table: table, perCoach: perCoach, list: list, fmtRec: fmtRec, fmt: fmt, ord: ord, isMe: isMe, poss: poss, word: word, cap: cap,
-    weekDates: weekDates, headline: headline, weekHref: weekHref, upcoming: upcoming, simulate: simulate, SIM_RUNS: SIM_RUNS,
+    bestWeeks: bestWeeks, weekDates: weekDates, headline: headline, weekHref: weekHref, upcoming: upcoming, simulate: simulate, SIM_RUNS: SIM_RUNS,
     // values every page template can use
     common: { leagueName: L.NAME, leagueUpper: L.NAME.toUpperCase(), tagline: tagline, commissioner: L.COMMISSIONER || '' }
   };

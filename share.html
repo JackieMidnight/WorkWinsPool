@@ -10,9 +10,9 @@
 body{margin:0;font-family:"Libre Franklin",system-ui,-apple-system,"Segoe UI",sans-serif;background:#0A1F14}
 a{color:#C9A24B}a:hover{color:#E2BE6A}
 </style>
-<script src="nfl.js?v=3" defer></script>
+<script src="nfl.js?v=4" defer></script>
 <script src="league.js?v=3" defer></script>
-<script src="pool.js?v=3" defer></script>
+<script src="pool.js?v=4" defer></script>
 <script src="support.js?v=3" defer></script>
 </head>
 <body>
@@ -61,23 +61,20 @@ class Component extends DCLogic {
     // The latest week; while it's being played the image says SO FAR instead of FINAL.
     var wk = Math.max(P.latest, 1), live = P.live(wk);
     var t = P.table(wk), prev = wk > 1 ? P.table(wk - 1).rank : null;
-    var rows = t.order.map(function (c, i) {
+    var rows = t.order.map(function (c) {
       var mv = prev ? prev[c] - t.rank[c] : 0;
       return {
         rk: t.label(c), name: c.toUpperCase(), teams: P.roster[c].join(' · '), wk: P.fmtRec(t.rec[c]), pts: t.pts[c],
-        nameColor: i === 0 ? '#C9A24B' : '#EFEDE0', ptsColor: i === 0 ? '#C9A24B' : '#EFEDE0',
+        nameColor: t.rank[c] === 1 ? '#C9A24B' : '#EFEDE0', ptsColor: t.rank[c] === 1 ? '#C9A24B' : '#EFEDE0',
         mv: !prev ? '' : mv > 0 ? '▲' + mv : mv < 0 ? '▼' + (-mv) : '–', mvColor: mv > 0 ? '#9CCB55' : '#8FA898'
       };
     });
     var leaders = t.order.filter(function (c) { return t.rank[c] === 1; });
-    var wkPts = function (c) { return t.rec[c][0] + t.rec[c][2] / 2; };
-    var best = Math.max.apply(null, P.coaches.map(wkPts));
-    var bestCoaches = t.order.filter(function (c) { return wkPts(c) === best; });
     var left = P.pending(wk).length;
     return { rows: rows, week: wk, status: live ? 'SO FAR' : 'FINAL',
       subtitle: (live ? 'WEEK ' + wk + ' SO FAR' : 'STANDINGS AFTER WEEK ' + wk),
       line1: P.headline(wk) + '. ' + (leaders.length === 1 ? leaders[0] + ' has first place alone with ' : P.list(leaders) + ' share first with ') + t.pts[leaders[0]] + ' points.',
-      line2: (live ? left + (left === 1 ? ' game' : ' games') + ' still to play. ' : '') + 'Best week' + (live ? ' so far' : '') + ': ' + P.list(bestCoaches) + ' at ' + P.fmtRec(t.rec[bestCoaches[0]]) + '.' };
+      line2: (live ? left + (left === 1 ? ' game' : ' games') + ' still to play. ' : '') + 'Best week' + (live ? ' so far' : '') + ': ' + P.bestWeeks(wk) + '.' };
   }
 }
 </script>
